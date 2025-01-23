@@ -6,7 +6,8 @@ Class {
 		'cell',
 		'textCell',
 		'codeCell',
-		'output'
+		'output',
+		'pythonEntity'
 	],
 	#category : 'Famix-Notebook-Generator',
 	#package : 'Famix-Notebook-Generator'
@@ -24,6 +25,12 @@ FamixNotebookgenerator class >> prefix [
 	^ #FamixNotebook
 ]
 
+{ #category : 'accessing' }
+FamixNotebookgenerator class >> submetamodels [
+
+	^ { FamixPythonGenerator }
+]
+
 { #category : 'definition' }
 FamixNotebookgenerator >> defineClasses [
 
@@ -33,13 +40,18 @@ FamixNotebookgenerator >> defineClasses [
 	cell := builder newAbstractClassNamed: #cell.
 	textCell := builder newClassNamed: #textCell.
 	codeCell := builder newClassNamed: #codeCell.
-	output := builder newClassNamed: #output. 
+	output := builder newClassNamed: #output.
+
+	"remote"
+	pythonEntity := self remoteEntity: #Entity withPrefix: #FamixPython
 ]
 
 { #category : 'definition' }
 FamixNotebookgenerator >> defineHierarchy [
 
 	super defineHierarchy.
+
+	notebook --|> namedEntity. 
 
 	codeCell --|> cell.
 	textCell --|> cell.
@@ -65,5 +77,8 @@ FamixNotebookgenerator >> defineProperties [
 { #category : 'definition' }
 FamixNotebookgenerator >> defineRelations [
 
-	super defineRelations
+	super defineRelations.
+	
+	notebook <>-* cell. 
+	codeCell -* pythonEntity. 
 ]
