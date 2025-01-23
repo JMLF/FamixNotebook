@@ -64,12 +64,19 @@ FamixNotebookgenerator >> defineProperties [
 
 	super defineProperties.
 	
+	notebook property: #metadata type: #Object.
+	
 	cell property: #id type: #String.
+	cell property: #metadata type: #Object.
 	
 	textCell property: #isMarkdown type: #Boolean.
 	textCell property: #content type: #String.
 	
 	codeCell property: #executionCount type: #Number.
+	
+	output property: #metadata type: #Object.
+	output property: #content type: #Object.
+	"TODO add the type property"
 	
 	
 ]
@@ -80,5 +87,7 @@ FamixNotebookgenerator >> defineRelations [
 	super defineRelations.
 	
 	notebook <>-* cell. 
-	codeCell -* pythonEntity. 
+	
+	codeCell -* pythonEntity.
+	codeCell - output. 
 ]
