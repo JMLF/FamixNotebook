@@ -79,7 +79,7 @@ FamixNotebookgenerator >> defineProperties [
 	output property: #metadata type: #Object.
 	output property: #data type: #Object.
 	output property: #output_type type: #String.
-	"TODO output_type should probably moved in an entity"
+	self flag: #todo. " output_type should probably moved in an entity"
 	"We also have another execution count in output should check what it is"
 	
 	

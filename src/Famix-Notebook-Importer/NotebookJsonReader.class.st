@@ -16,21 +16,25 @@ Class {
 { #category : 'instance creation' }
 NotebookJsonReader >> createCodeCell: cell [
 
-	| famixNBCell outputs |
+	| famixNBCell outputs sourceAnchor pythonEntities |
 	famixNBCell := FamixNotebookCodeCell new
 		               mooseModel: model;
 		               executionCount: (cell at: 'execution_count');
 		               id: (cell at: 'id');
 		               metadata: (cell at: 'metadata');
-		               sourceAnchor:
-			               (self createSourceAnchor: (cell at: 'source'));
 		               "ToDo ajouter la construction des pythonEntite a partir du source"
 			               yourself.
 
 	outputs := (cell at: 'outputs') ifNotNil: [ :outputs |
 		           outputs collect: [ :output | self createOutput: output ] ].
 	outputs ifNotEmpty: [
-		outputs do: [ :famixNBOutput | famixNBCell output: famixNBOutput ] ]
+		outputs do: [ :famixNBOutput | famixNBCell output: famixNBOutput ] ].
+	
+	sourceAnchor := self createSourceAnchor: (cell at: 'source').
+	famixNBCell sourceAnchor: sourceAnchor. 
+	
+	pythonEntities := self createPythonEntities: sourceAnchor. 
+
 ]
 
 { #category : 'instance creation' }
@@ -58,6 +62,19 @@ NotebookJsonReader >> createOutput: anOutput [
 							output_type: (anOutput at: 'output_type');
 		               yourself.
 	^famixNBOutput 	
+]
+
+{ #category : 'as yet unclassified' }
+NotebookJsonReader >> createPythonEntities: sourceAnchor [
+
+	| source  fileReference |
+	source := sourceAnchor sourceText. 
+		
+	"We havn't a file so we need to use pythonImporter on string directly"
+	model := FamixPythonImporter new importPythonString: source. 
+	1halt
+	
+	self flag: #todo.
 ]
 
 { #category : 'as yet unclassified' }
