@@ -16,15 +16,19 @@ Class {
 { #category : 'instance creation' }
 NotebookJsonReader >> createCodeCell: cell [
 
-	| famixNBCell |
+	| famixNBCell outputs |
 	famixNBCell := FamixNotebookCodeCell new
 		               mooseModel: model;
 		               executionCount: (cell at: 'execution_count');
 		               id: (cell at: 'id');
 		               metadata: (cell at: 'metadata');
-							"sourceText: (cell at: 'source');" "Passer le source avec TSourceEntity"
+							"sourceAnchor: (cell at: 'source');" "comment fonctionne le source anchor ?"
 							"ToDo ajouter la construction des pythonEntite a partir du source"
-		               yourself "Le moose model permet de rassembler toutes les entite dans le model"
+		               yourself. "Le moose model permet de rassembler toutes les entite dans le model"
+		
+	outputs := (cell at: 'outputs') ifNotNil: [:outputs | outputs collect: [:output | self createOutput: output  ]  ].
+	outputs ifNotEmpty: [ outputs do: [ :famixNBOutput | famixNBCell output: famixNBOutput ] ]
+"1halt"
 ]
 
 { #category : 'instance creation' }
@@ -41,9 +45,25 @@ NotebookJsonReader >> createMarkdownCell: cell [
 		               yourself
 ]
 
+{ #category : 'as yet unclassified' }
+NotebookJsonReader >> createOutput: anOutput [
+
+	| famixNBOutput |
+	famixNBOutput := FamixNotebookOutput new
+		               mooseModel: model;
+							data: (anOutput at: 'data');
+							metadata: (anOutput at: 'metadata');
+							output_type: (anOutput at: 'output_type');
+		               yourself.
+	^famixNBOutput 	
+]
+
 { #category : 'instance creation' }
 NotebookJsonReader >> parseFromcell: cell [
-	((cell at: 'cell_type') = 'code') ifTrue: [ self createCodeCell: cell ] ifFalse: [ self createMarkdownCell: cell ]
+
+	(cell at: 'cell_type') = 'code'
+		ifTrue: [ self createCodeCell: cell ]
+		ifFalse: [ self createMarkdownCell: cell ]
 ]
 
 { #category : 'instance creation' }

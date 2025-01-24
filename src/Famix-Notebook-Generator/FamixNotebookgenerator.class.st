@@ -77,7 +77,6 @@ FamixNotebookgenerator >> defineProperties [
 	codeCell property: #executionCount type: #Number.
 	
 	output property: #metadata type: #Object.
-	output property: #content type: #Object.
 	output property: #data type: #Object.
 	output property: #output_type type: #String.
 	"TODO output_type should probably moved in an entity"
