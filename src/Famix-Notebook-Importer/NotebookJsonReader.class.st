@@ -22,13 +22,15 @@ NotebookJsonReader >> createCodeCell: cell [
 		               executionCount: (cell at: 'execution_count');
 		               id: (cell at: 'id');
 		               metadata: (cell at: 'metadata');
-							"sourceAnchor: (cell at: 'source');" "comment fonctionne le source anchor ?"
-							"ToDo ajouter la construction des pythonEntite a partir du source"
-		               yourself. "Le moose model permet de rassembler toutes les entite dans le model"
-		
-	outputs := (cell at: 'outputs') ifNotNil: [:outputs | outputs collect: [:output | self createOutput: output  ]  ].
-	outputs ifNotEmpty: [ outputs do: [ :famixNBOutput | famixNBCell output: famixNBOutput ] ]
-"1halt"
+		               sourceAnchor:
+			               (self createSourceAnchor: (cell at: 'source'));
+		               "ToDo ajouter la construction des pythonEntite a partir du source"
+			               yourself.
+
+	outputs := (cell at: 'outputs') ifNotNil: [ :outputs |
+		           outputs collect: [ :output | self createOutput: output ] ].
+	outputs ifNotEmpty: [
+		outputs do: [ :famixNBOutput | famixNBCell output: famixNBOutput ] ]
 ]
 
 { #category : 'instance creation' }
@@ -56,6 +58,17 @@ NotebookJsonReader >> createOutput: anOutput [
 							output_type: (anOutput at: 'output_type');
 		               yourself.
 	^famixNBOutput 	
+]
+
+{ #category : 'as yet unclassified' }
+NotebookJsonReader >> createSourceAnchor: aSourceArray [
+
+	| sourceText sourceAnchor |
+	sourceText := String streamContents: [ :stream |
+		              aSourceArray do: [ :each | stream nextPutAll: each ] ].
+	^ sourceAnchor := FamixNotebookSourceTextAnchor new
+		                  source: sourceText;
+		                  yourself
 ]
 
 { #category : 'instance creation' }
