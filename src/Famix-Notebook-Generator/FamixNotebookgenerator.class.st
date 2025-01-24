@@ -36,11 +36,11 @@ FamixNotebookgenerator >> defineClasses [
 
 	super defineClasses.
 
-	notebook := builder newClassNamed: #Notebook.
-	cell := builder newAbstractClassNamed: #cell.
-	textCell := builder newClassNamed: #textCell.
-	codeCell := builder newClassNamed: #codeCell.
-	output := builder newClassNamed: #output.
+	"notebook := builder newClassNamed: #Notebook."
+	cell := builder newAbstractClassNamed: #Cell.
+	textCell := builder newClassNamed: #TextCell.
+	codeCell := builder newClassNamed: #CodeCell.
+	output := builder newClassNamed: #Output.
 
 	"remote"
 	pythonEntity := self remoteEntity: #Entity withPrefix: #FamixPython
@@ -51,12 +51,14 @@ FamixNotebookgenerator >> defineHierarchy [
 
 	super defineHierarchy.
 
-	notebook --|> namedEntity. 
+	"notebook --|> namedEntity. "
 
 	codeCell --|> cell.
-	textCell --|> cell.
 	codeCell --|> #TSourceEntity.
 	"codeCell --|> sourcedEntity." "Code precedent ne casse pas mais le model semble ne pas etre bon => pas d'heritage multiple" 
+	
+	textCell --|> cell.
+	"Devrait probablement utiliser TSourceEntity egalement"
 ]
 
 { #category : 'definition' }
@@ -64,7 +66,7 @@ FamixNotebookgenerator >> defineProperties [
 
 	super defineProperties.
 	
-	notebook property: #metadata type: #Object.
+	"notebook property: #metadata type: #Object."
 	
 	cell property: #id type: #String.
 	cell property: #metadata type: #Object.
@@ -76,7 +78,10 @@ FamixNotebookgenerator >> defineProperties [
 	
 	output property: #metadata type: #Object.
 	output property: #content type: #Object.
-	"TODO add the type property"
+	output property: #data type: #Object.
+	output property: #output_type type: #String.
+	"TODO output_type should probably moved in an entity"
+	"We also have another execution count in output should check what it is"
 	
 	
 ]
@@ -86,7 +91,7 @@ FamixNotebookgenerator >> defineRelations [
 
 	super defineRelations.
 	
-	notebook <>-* cell. 
+	"notebook <>-* cell." 
 	
 	codeCell -* pythonEntity.
 	codeCell - output. 

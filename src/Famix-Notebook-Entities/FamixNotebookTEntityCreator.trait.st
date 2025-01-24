@@ -21,6 +21,13 @@ FamixNotebookTEntityCreator classSide >> annotation [
 ]
 
 { #category : 'entity creation' }
+FamixNotebookTEntityCreator >> newCodeCell [
+
+	<generated>
+	^ self add: FamixNotebookCodeCell new
+]
+
+{ #category : 'entity creation' }
 FamixNotebookTEntityCreator >> newComment [
 
 	<generated>
@@ -28,10 +35,10 @@ FamixNotebookTEntityCreator >> newComment [
 ]
 
 { #category : 'entity creation' }
-FamixNotebookTEntityCreator >> newNotebook [
+FamixNotebookTEntityCreator >> newOutput [
 
 	<generated>
-	^ self add: FamixNotebookNotebook new
+	^ self add: FamixNotebookOutput new
 ]
 
 { #category : 'entity creation' }
@@ -49,22 +56,8 @@ FamixNotebookTEntityCreator >> newSourceTextAnchor [
 ]
 
 { #category : 'entity creation' }
-FamixNotebookTEntityCreator >> newcodeCell [
+FamixNotebookTEntityCreator >> newTextCell [
 
 	<generated>
-	^ self add: FamixNotebookcodeCell new
-]
-
-{ #category : 'entity creation' }
-FamixNotebookTEntityCreator >> newoutput [
-
-	<generated>
-	^ self add: FamixNotebookoutput new
-]
-
-{ #category : 'entity creation' }
-FamixNotebookTEntityCreator >> newtextCell [
-
-	<generated>
-	^ self add: FamixNotebooktextCell new
+	^ self add: FamixNotebookTextCell new
 ]

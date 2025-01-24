@@ -2,10 +2,10 @@ Extension { #name : 'FamixPythonEntity' }
 
 { #category : '*Famix-Notebook-Entities-accessing' }
 FamixPythonEntity >> codeCell [
-	"Relation named: #codeCell type: #FamixNotebookcodeCell opposite: #entities"
+	"Relation named: #codeCell type: #FamixNotebookCodeCell opposite: #entities"
 
 	<generated>
-	<FMProperty: #codeCell type: #FamixNotebookcodeCell opposite: #entities>
+	<FMProperty: #codeCell type: #FamixNotebookCodeCell opposite: #entities>
 	<package: #'Famix-Notebook-Entities'>
 	^ self attributeAt: #codeCell ifAbsent: [ nil ]
 ]

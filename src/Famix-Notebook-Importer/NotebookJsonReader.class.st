@@ -17,7 +17,7 @@ Class {
 NotebookJsonReader >> createCodeCell: cell [
 
 	| famixNBCell |
-	famixNBCell := FamixNotebookcodeCell new
+	famixNBCell := FamixNotebookCodeCell new
 		               mooseModel: model;
 		               executionCount: (cell at: 'execution_count');
 		               id: (cell at: 'id');
@@ -31,7 +31,7 @@ NotebookJsonReader >> createCodeCell: cell [
 NotebookJsonReader >> createMarkdownCell: cell [
 
 	| famixNBCell |
-	famixNBCell := FamixNotebooktextCell new
+	famixNBCell := FamixNotebookTextCell new
 		               mooseModel: model;
 		               isMarkdown: true;
 		               id: (cell at: 'id');

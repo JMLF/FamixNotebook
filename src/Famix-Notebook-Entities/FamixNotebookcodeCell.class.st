@@ -5,8 +5,8 @@
 ### Other
 | Relation | Origin | Opposite | Type | Comment |
 |---|
-| `entities` | `FamixNotebookcodeCell` | `codeCell` | `FamixPythonEntity` | |
-| `output` | `FamixNotebookcodeCell` | `codeCell` | `FamixNotebookoutput` | |
+| `entities` | `FamixNotebookCodeCell` | `codeCell` | `FamixPythonEntity` | |
+| `output` | `FamixNotebookCodeCell` | `codeCell` | `FamixNotebookOutput` | |
 | `sourceAnchor` | `FamixTSourceEntity` | `element` | `FamixTSourceAnchor` | SourceAnchor entity linking to the original source code for this entity|
 
 
@@ -19,13 +19,13 @@
 
 "
 Class {
-	#name : 'FamixNotebookcodeCell',
-	#superclass : 'FamixNotebookcell',
+	#name : 'FamixNotebookCodeCell',
+	#superclass : 'FamixNotebookCell',
 	#traits : 'FamixTSourceEntity',
 	#classTraits : 'FamixTSourceEntity classTrait',
 	#instVars : [
 		'#executionCount => FMProperty',
-		'#output => FMOne type: #FamixNotebookoutput opposite: #codeCell'
+		'#output => FMOne type: #FamixNotebookOutput opposite: #codeCell'
 	],
 	#category : 'Famix-Notebook-Entities-Entities',
 	#package : 'Famix-Notebook-Entities',
@@ -33,22 +33,22 @@ Class {
 }
 
 { #category : 'meta' }
-FamixNotebookcodeCell class >> annotation [
+FamixNotebookCodeCell class >> annotation [
 
-	<FMClass: #codeCell super: #FamixNotebookcell>
+	<FMClass: #CodeCell super: #FamixNotebookCell>
 	<package: #'Famix-Notebook-Entities'>
 	<generated>
 	^ self
 ]
 
 { #category : 'adding' }
-FamixNotebookcodeCell >> addEntity: anObject [
+FamixNotebookCodeCell >> addEntity: anObject [
 	<generated>
 	^ self entities add: anObject
 ]
 
 { #category : 'accessing' }
-FamixNotebookcodeCell >> entities [
+FamixNotebookCodeCell >> entities [
 	"Relation named: #entities type: #FamixPythonEntity opposite: #codeCell"
 
 	<generated>
@@ -58,14 +58,14 @@ FamixNotebookcodeCell >> entities [
 ]
 
 { #category : 'accessing' }
-FamixNotebookcodeCell >> entities: anObject [
+FamixNotebookCodeCell >> entities: anObject [
 
 	<generated>
 	self entities value: anObject
 ]
 
 { #category : 'accessing' }
-FamixNotebookcodeCell >> executionCount [
+FamixNotebookCodeCell >> executionCount [
 
 	<FMProperty: #executionCount type: #Number>
 	<generated>
@@ -73,21 +73,21 @@ FamixNotebookcodeCell >> executionCount [
 ]
 
 { #category : 'accessing' }
-FamixNotebookcodeCell >> executionCount: anObject [
+FamixNotebookCodeCell >> executionCount: anObject [
 	<generated>
 	executionCount := anObject
 ]
 
 { #category : 'accessing' }
-FamixNotebookcodeCell >> output [
-	"Relation named: #output type: #FamixNotebookoutput opposite: #codeCell"
+FamixNotebookCodeCell >> output [
+	"Relation named: #output type: #FamixNotebookOutput opposite: #codeCell"
 
 	<generated>
 	^ output
 ]
 
 { #category : 'accessing' }
-FamixNotebookcodeCell >> output: anObject [
+FamixNotebookCodeCell >> output: anObject [
 
 	<generated>
 	output := anObject

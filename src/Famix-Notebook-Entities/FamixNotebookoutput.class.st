@@ -5,7 +5,7 @@
 ### Other
 | Relation | Origin | Opposite | Type | Comment |
 |---|
-| `codeCell` | `FamixNotebookoutput` | `output` | `FamixNotebookcodeCell` | |
+| `codeCell` | `FamixNotebookOutput` | `output` | `FamixNotebookCodeCell` | |
 
 
 ## Properties
@@ -14,16 +14,20 @@
 | Name | Type | Default value | Comment |
 |---|
 | `content` | `Object` | nil | |
+| `data` | `Object` | nil | |
 | `metadata` | `Object` | nil | |
+| `output_type` | `String` | nil | |
 
 "
 Class {
-	#name : 'FamixNotebookoutput',
+	#name : 'FamixNotebookOutput',
 	#superclass : 'FamixNotebookEntity',
 	#instVars : [
-		'#codeCell => FMOne type: #FamixNotebookcodeCell opposite: #output',
+		'#metadata => FMProperty',
 		'#content => FMProperty',
-		'#metadata => FMProperty'
+		'#data => FMProperty',
+		'#output_type => FMProperty',
+		'#codeCell => FMOne type: #FamixNotebookCodeCell opposite: #output'
 	],
 	#category : 'Famix-Notebook-Entities-Entities',
 	#package : 'Famix-Notebook-Entities',
@@ -31,17 +35,17 @@ Class {
 }
 
 { #category : 'meta' }
-FamixNotebookoutput class >> annotation [
+FamixNotebookOutput class >> annotation [
 
-	<FMClass: #output super: #FamixNotebookEntity>
+	<FMClass: #Output super: #FamixNotebookEntity>
 	<package: #'Famix-Notebook-Entities'>
 	<generated>
 	^ self
 ]
 
 { #category : 'accessing' }
-FamixNotebookoutput >> codeCell [
-	"Relation named: #codeCell type: #FamixNotebookcodeCell opposite: #output"
+FamixNotebookOutput >> codeCell [
+	"Relation named: #codeCell type: #FamixNotebookCodeCell opposite: #output"
 
 	<generated>
 	<derived>
@@ -49,14 +53,14 @@ FamixNotebookoutput >> codeCell [
 ]
 
 { #category : 'accessing' }
-FamixNotebookoutput >> codeCell: anObject [
+FamixNotebookOutput >> codeCell: anObject [
 
 	<generated>
 	codeCell := anObject
 ]
 
 { #category : 'accessing' }
-FamixNotebookoutput >> content [
+FamixNotebookOutput >> content [
 
 	<FMProperty: #content type: #Object>
 	<generated>
@@ -64,13 +68,27 @@ FamixNotebookoutput >> content [
 ]
 
 { #category : 'accessing' }
-FamixNotebookoutput >> content: anObject [
+FamixNotebookOutput >> content: anObject [
 	<generated>
 	content := anObject
 ]
 
 { #category : 'accessing' }
-FamixNotebookoutput >> metadata [
+FamixNotebookOutput >> data [
+
+	<FMProperty: #data type: #Object>
+	<generated>
+	^ data
+]
+
+{ #category : 'accessing' }
+FamixNotebookOutput >> data: anObject [
+	<generated>
+	data := anObject
+]
+
+{ #category : 'accessing' }
+FamixNotebookOutput >> metadata [
 
 	<FMProperty: #metadata type: #Object>
 	<generated>
@@ -78,7 +96,21 @@ FamixNotebookoutput >> metadata [
 ]
 
 { #category : 'accessing' }
-FamixNotebookoutput >> metadata: anObject [
+FamixNotebookOutput >> metadata: anObject [
 	<generated>
 	metadata := anObject
+]
+
+{ #category : 'accessing' }
+FamixNotebookOutput >> output_type [
+
+	<FMProperty: #output_type type: #String>
+	<generated>
+	^ output_type
+]
+
+{ #category : 'accessing' }
+FamixNotebookOutput >> output_type: anObject [
+	<generated>
+	output_type := anObject
 ]

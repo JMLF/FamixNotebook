@@ -9,11 +9,11 @@
 
 "
 Class {
-	#name : 'FamixNotebooktextCell',
-	#superclass : 'FamixNotebookcell',
+	#name : 'FamixNotebookTextCell',
+	#superclass : 'FamixNotebookCell',
 	#instVars : [
-		'#content => FMProperty',
-		'#isMarkdown => FMProperty'
+		'#isMarkdown => FMProperty',
+		'#content => FMProperty'
 	],
 	#category : 'Famix-Notebook-Entities-Entities',
 	#package : 'Famix-Notebook-Entities',
@@ -21,16 +21,16 @@ Class {
 }
 
 { #category : 'meta' }
-FamixNotebooktextCell class >> annotation [
+FamixNotebookTextCell class >> annotation [
 
-	<FMClass: #textCell super: #FamixNotebookcell>
+	<FMClass: #TextCell super: #FamixNotebookCell>
 	<package: #'Famix-Notebook-Entities'>
 	<generated>
 	^ self
 ]
 
 { #category : 'accessing' }
-FamixNotebooktextCell >> content [
+FamixNotebookTextCell >> content [
 
 	<FMProperty: #content type: #String>
 	<generated>
@@ -38,13 +38,13 @@ FamixNotebooktextCell >> content [
 ]
 
 { #category : 'accessing' }
-FamixNotebooktextCell >> content: anObject [
+FamixNotebookTextCell >> content: anObject [
 	<generated>
 	content := anObject
 ]
 
 { #category : 'accessing' }
-FamixNotebooktextCell >> isMarkdown [
+FamixNotebookTextCell >> isMarkdown [
 
 	<FMProperty: #isMarkdown type: #Boolean>
 	<generated>
@@ -52,7 +52,7 @@ FamixNotebooktextCell >> isMarkdown [
 ]
 
 { #category : 'accessing' }
-FamixNotebooktextCell >> isMarkdown: anObject [
+FamixNotebookTextCell >> isMarkdown: anObject [
 	<generated>
 	isMarkdown := anObject
 ]

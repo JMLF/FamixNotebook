@@ -1,13 +1,4 @@
 "
-## Relations
-======================
-
-### Parents
-| Relation | Origin | Opposite | Type | Comment |
-|---|
-| `notebook` | `FamixNotebookcell` | `cells` | `FamixNotebookNotebook` | |
-
-
 ## Properties
 ======================
 
@@ -18,12 +9,11 @@
 
 "
 Class {
-	#name : 'FamixNotebookcell',
+	#name : 'FamixNotebookCell',
 	#superclass : 'FamixNotebookEntity',
 	#instVars : [
 		'#id => FMProperty',
-		'#metadata => FMProperty',
-		'#notebook => FMOne type: #FamixNotebookNotebook opposite: #cells'
+		'#metadata => FMProperty'
 	],
 	#category : 'Famix-Notebook-Entities-Entities',
 	#package : 'Famix-Notebook-Entities',
@@ -31,9 +21,9 @@ Class {
 }
 
 { #category : 'meta' }
-FamixNotebookcell class >> annotation [
+FamixNotebookCell class >> annotation [
 
-	<FMClass: #cell super: #FamixNotebookEntity>
+	<FMClass: #Cell super: #FamixNotebookEntity>
 	<package: #'Famix-Notebook-Entities'>
 	<generated>
 	<abstract>
@@ -41,14 +31,14 @@ FamixNotebookcell class >> annotation [
 ]
 
 { #category : 'testing' }
-FamixNotebookcell class >> isAbstract [
+FamixNotebookCell class >> isAbstract [
 
 	<generated>
-	^ self == FamixNotebookcell
+	^ self == FamixNotebookCell
 ]
 
 { #category : 'accessing' }
-FamixNotebookcell >> id [
+FamixNotebookCell >> id [
 
 	<FMProperty: #id type: #String>
 	<generated>
@@ -56,13 +46,13 @@ FamixNotebookcell >> id [
 ]
 
 { #category : 'accessing' }
-FamixNotebookcell >> id: anObject [
+FamixNotebookCell >> id: anObject [
 	<generated>
 	id := anObject
 ]
 
 { #category : 'accessing' }
-FamixNotebookcell >> metadata [
+FamixNotebookCell >> metadata [
 
 	<FMProperty: #metadata type: #Object>
 	<generated>
@@ -70,30 +60,7 @@ FamixNotebookcell >> metadata [
 ]
 
 { #category : 'accessing' }
-FamixNotebookcell >> metadata: anObject [
+FamixNotebookCell >> metadata: anObject [
 	<generated>
 	metadata := anObject
-]
-
-{ #category : 'accessing' }
-FamixNotebookcell >> notebook [
-	"Relation named: #notebook type: #FamixNotebookNotebook opposite: #cells"
-
-	<generated>
-	<container>
-	^ notebook
-]
-
-{ #category : 'accessing' }
-FamixNotebookcell >> notebook: anObject [
-
-	<generated>
-	notebook := anObject
-]
-
-{ #category : 'navigation' }
-FamixNotebookcell >> notebookGroup [
-	<generated>
-	<navigation: 'Notebook'>
-	^ MooseSpecializedGroup with: self notebook
 ]
