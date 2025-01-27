@@ -34,6 +34,11 @@ NotebookJsonReader >> createCodeCell: cell [
 	famixNBCell sourceAnchor: sourceAnchor. 
 	
 	pythonEntities := self createPythonEntities: sourceAnchor. 
+	"see if it work -> does not"
+	self flag: #fixme.
+	"link between python entities and code cell need some work"
+	pythonEntities ifNotEmpty: [ pythonEntities do: [:entity | famixNBCell addEntity: entity] ].
+	
 
 ]
 
@@ -67,14 +72,22 @@ NotebookJsonReader >> createOutput: anOutput [
 { #category : 'as yet unclassified' }
 NotebookJsonReader >> createPythonEntities: sourceAnchor [
 
-	| source  fileReference |
+	| source  fileReference pythonModel |
 	source := sourceAnchor sourceText. 
 		
 	"We havn't a file so we need to use pythonImporter on string directly"
-	model := FamixPythonImporter new importPythonString: source. 
-	1halt
+	"model := FamixPythonImporter new importPythonString: source. "
+	
+	"Not great but we can also create a tmp file with our source to get a fileReference to parse"
+	fileReference := FileReference newTempFilePrefix: 'pythonNB-' suffix: '-entity.py'.
+
+	fileReference writeStreamDo: [ :stream | stream nextPutAll: source ].
+	pythonModel := FamixPythonImporter import: fileReference.
+	"1halt."
+	^pythonModel.
 	
 	self flag: #todo.
+	"Update the python visitor to add a default module in the case we want to visit strings not files"
 ]
 
 { #category : 'as yet unclassified' }
