@@ -7,7 +7,8 @@ Class {
 		'orient',
 		'parseMap',
 		'model',
-		'filename'
+		'filename',
+		'fileReference'
 	],
 	#category : 'Famix-Notebook-Importer',
 	#package : 'Famix-Notebook-Importer'
@@ -114,9 +115,25 @@ NotebookJsonReader >> read: json [
 	"Loads parsed json"
 
 	json ifEmpty: [ cells := #(  ) ] ifNotEmpty: [
-		model := FamixNotebookModel new name: filename; yourself. "ici on passe une entite qui englobante et on a plus besoin de l'entite Notebook"
-		cells := json at: 'cells' .
-		cells do: [:cell | self parseFromcell: cell]]
+		model := FamixNotebookModel new
+			         name: filename;
+			         yourself. 
+		cells := json at: 'cells'.
+
+		"tmp file to store the complete notebook"
+		fileReference := FileReference
+			                 newTempFilePrefix: 'pythonfullNB-'
+			                 suffix: '-entity.py'.
+		fileReference writeStreamDo: [ :stream |
+			cells do: [ :cell |
+				(cell at: 'cell_type') = 'code' ifTrue: [
+					(cell at: 'source') do: [ :line |
+						stream
+							nextPutAll: line; cr
+							 "maybe not cr on each line but a cr after a cell" ] ] ] ].
+		"1 halt."
+
+		cells do: [ :cell | self parseFromcell: cell ] ]
 ]
 
 { #category : 'instance creation' }
