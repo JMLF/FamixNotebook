@@ -1,3 +1,10 @@
+"
+# Usage :
+
+file := '/Users/mignard/Documents/work/mooseDemo/pythonvarusage/Split_with_train_override.ipynb' asFileReference.
+
+NotebookJsonReader new readFrom: file.
+"
 Class {
 	#name : 'NotebookJsonReader',
 	#superclass : 'Object',
@@ -30,17 +37,18 @@ NotebookJsonReader >> createCodeCell: cell [
 		           outputs collect: [ :output | self createOutput: output ] ].
 	outputs ifNotEmpty: [
 		outputs do: [ :famixNBOutput | famixNBCell output: famixNBOutput ] ].
-	
+
+	"See if we can merge the file creation with sourceAnchor creation"
 	sourceAnchor := self createSourceAnchor: (cell at: 'source').
-	famixNBCell sourceAnchor: sourceAnchor. 
-	
-	pythonEntities := self createPythonEntities: sourceAnchor. 
+	famixNBCell sourceAnchor: sourceAnchor.
+
+
+	pythonEntities := self createPythonEntities: sourceAnchor.
 	"see if it work -> does not"
 	self flag: #fixme.
 	"link between python entities and code cell need some work"
-	pythonEntities ifNotEmpty: [ pythonEntities do: [:entity | famixNBCell addEntity: entity] ].
-	
-
+	pythonEntities ifNotEmpty: [
+		pythonEntities do: [ :entity | famixNBCell addEntity: entity ] ]
 ]
 
 { #category : 'instance creation' }
@@ -73,17 +81,17 @@ NotebookJsonReader >> createOutput: anOutput [
 { #category : 'as yet unclassified' }
 NotebookJsonReader >> createPythonEntities: sourceAnchor [
 
-	| source  fileReference pythonModel |
+	| source  localfileReference pythonModel |
 	source := sourceAnchor sourceText. 
 		
 	"We havn't a file so we need to use pythonImporter on string directly"
 	"model := FamixPythonImporter new importPythonString: source. "
 	
 	"Not great but we can also create a tmp file with our source to get a fileReference to parse"
-	fileReference := FileReference newTempFilePrefix: 'pythonNB-' suffix: '-entity.py'.
+	localfileReference := FileReference newTempFilePrefix: 'pythonCell-' suffix: '-entity.py'.
 
-	fileReference writeStreamDo: [ :stream | stream nextPutAll: source ].
-	pythonModel := FamixPythonImporter import: fileReference.
+	localfileReference writeStreamDo: [ :stream | stream nextPutAll: source ].
+	pythonModel := FamixPythonImporter import: localfileReference.
 	"1halt."
 	^pythonModel.
 	
@@ -114,24 +122,27 @@ NotebookJsonReader >> parseFromcell: cell [
 NotebookJsonReader >> read: json [
 	"Loads parsed json"
 
+	| i |
 	json ifEmpty: [ cells := #(  ) ] ifNotEmpty: [
 		model := FamixNotebookModel new
 			         name: filename;
-			         yourself. 
+			         yourself.
 		cells := json at: 'cells'.
 
 		"tmp file to store the complete notebook"
 		fileReference := FileReference
 			                 newTempFilePrefix: 'pythonfullNB-'
 			                 suffix: '-entity.py'.
+			
+		i := 0. "Find a better way to do that"	
 		fileReference writeStreamDo: [ :stream |
 			cells do: [ :cell |
 				(cell at: 'cell_type') = 'code' ifTrue: [
-					(cell at: 'source') do: [ :line |
-						stream
-							nextPutAll: line; cr
-							 "maybe not cr on each line but a cr after a cell" ] ] ] ].
-		"1 halt."
+					stream nextPutAll: '#cell-',(i asString); cr.
+					(cell at: 'source') do: [ :line | 
+						stream nextPutAll: line.].
+					i := i + 1.
+					stream cr. ] ] ].
 
 		cells do: [ :cell | self parseFromcell: cell ] ]
 ]
