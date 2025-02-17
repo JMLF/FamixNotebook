@@ -13,7 +13,6 @@
 
 | Name | Type | Default value | Comment |
 |---|
-| `content` | `Object` | nil | |
 | `data` | `Object` | nil | |
 | `metadata` | `Object` | nil | |
 | `output_type` | `String` | nil | |
@@ -24,7 +23,6 @@ Class {
 	#superclass : 'FamixNotebookEntity',
 	#instVars : [
 		'#metadata => FMProperty',
-		'#content => FMProperty',
 		'#data => FMProperty',
 		'#output_type => FMProperty',
 		'#codeCell => FMOne type: #FamixNotebookCodeCell opposite: #output'
@@ -57,20 +55,6 @@ FamixNotebookOutput >> codeCell: anObject [
 
 	<generated>
 	codeCell := anObject
-]
-
-{ #category : 'accessing' }
-FamixNotebookOutput >> content [
-
-	<FMProperty: #content type: #Object>
-	<generated>
-	^ content
-]
-
-{ #category : 'accessing' }
-FamixNotebookOutput >> content: anObject [
-	<generated>
-	content := anObject
 ]
 
 { #category : 'accessing' }
