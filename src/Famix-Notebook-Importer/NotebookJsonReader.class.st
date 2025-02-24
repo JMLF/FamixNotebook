@@ -14,7 +14,9 @@ Class {
 		'cells',
 		'filename',
 		'fileReference',
-		'pythonModel'
+		'pythonModel',
+		'startLine',
+		'current_cell'
 	],
 	#category : 'Famix-Notebook-Importer',
 	#package : 'Famix-Notebook-Importer'
@@ -23,13 +25,12 @@ Class {
 { #category : 'as yet unclassified' }
 NotebookJsonReader >> createCodeCell: cell [ 
 
-	| famixNBCell outputs sourceAnchor pythonEntities |
+	| famixNBCell outputs sourceAnchor pythonEntities startLine current_comment startPos |
 	famixNBCell := FamixNotebookCodeCell new
 		               mooseModel: model;
 		               executionCount: (cell at: 'execution_count');
 		               id: (cell at: 'id');
 		               metadata: (cell at: 'metadata');
-		               "ToDo ajouter la construction des pythonEntite a partir du source"
 			               yourself.
 
 	outputs := (cell at: 'outputs') ifNotNil: [ :outputs |
@@ -37,7 +38,12 @@ NotebookJsonReader >> createCodeCell: cell [
 	outputs ifNotEmpty: [
 		outputs do: [ :famixNBOutput | famixNBCell output: famixNBOutput ] ].
 
-	"See if we can merge the file creation with sourceAnchor creation"
+	"Smacc renvoi les comment avec un cr, c'est pourquoi pas de = directement"
+	current_comment := pythonModel allComments select: [ :c | (c content beginsWith: '#cell-') and: [ c content includesSubstring: (current_cell asString) ] ]. 
+	"Il faudrait gerer le cas ou l'on a plus d'un resultat pour le current comment"
+	startPos := current_comment first sourceAnchor startPos. 
+
+	1halt.
 	sourceAnchor := self createSourceAnchor: (cell at: 'source').
 	famixNBCell sourceAnchor: sourceAnchor.
 
@@ -80,7 +86,7 @@ NotebookJsonReader >> createOutput: anOutput [
 { #category : 'as yet unclassified' }
 NotebookJsonReader >> createPythonEntities: sourceAnchor [ 
 
-	| source  localfileReference pythonModel |
+	| source  localfileReference pythonEntites |
 	source := sourceAnchor sourceText. 
 		
 	"We havn't a file so we need to use pythonImporter on string directly"
@@ -90,9 +96,9 @@ NotebookJsonReader >> createPythonEntities: sourceAnchor [
 	localfileReference := FileReference newTempFilePrefix: 'pythonCell-' suffix: '-entity.py'.
 
 	localfileReference writeStreamDo: [ :stream | stream nextPutAll: source ].
-	pythonModel := FamixPythonImporter import: localfileReference.
+	pythonEntites := FamixPythonImporter import: localfileReference.
 	"1halt."
-	^pythonModel.
+	^pythonEntites.
 	
 	self flag: #todo.
 	"Update the python visitor to add a default module in the case we want to visit strings not files"
@@ -107,6 +113,12 @@ NotebookJsonReader >> createSourceAnchor: aSourceArray [
 	^ sourceAnchor := FamixNotebookSourceTextAnchor new
 		                  source: sourceText;
 		                  yourself
+]
+
+{ #category : 'initialization' }
+NotebookJsonReader >> initialize [ 
+
+	current_cell := 0
 ]
 
 { #category : 'accessing' }
