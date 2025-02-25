@@ -15,6 +15,7 @@
 
 | Name | Type | Default value | Comment |
 |---|
+| `cellId` | `Number` | nil | |
 | `executionCount` | `Number` | nil | |
 
 "
@@ -24,6 +25,7 @@ Class {
 	#traits : 'FamixTSourceEntity',
 	#classTraits : 'FamixTSourceEntity classTrait',
 	#instVars : [
+		'#cellId => FMProperty',
 		'#executionCount => FMProperty',
 		'#output => FMOne type: #FamixNotebookOutput opposite: #codeCell'
 	],
@@ -45,6 +47,20 @@ FamixNotebookCodeCell class >> annotation [
 FamixNotebookCodeCell >> addEntity: anObject [
 	<generated>
 	^ self entities add: anObject
+]
+
+{ #category : 'accessing' }
+FamixNotebookCodeCell >> cellId [
+
+	<FMProperty: #cellId type: #Number>
+	<generated>
+	^ cellId
+]
+
+{ #category : 'accessing' }
+FamixNotebookCodeCell >> cellId: anObject [
+	<generated>
+	cellId := anObject
 ]
 
 { #category : 'accessing' }

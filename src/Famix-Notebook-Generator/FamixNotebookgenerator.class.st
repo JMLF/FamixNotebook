@@ -77,6 +77,7 @@ FamixNotebookgenerator >> defineProperties [
 	textCell property: #content type: #String.
 	
 	codeCell property: #executionCount type: #Number.
+	codeCell property: #cellId type: #Number.
 	
 	output property: #metadata type: #Object.
 	output property: #data type: #Object.

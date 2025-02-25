@@ -35,11 +35,12 @@ NotebookJsonReader >> allModelEntitiesFrom: startPos to: endPos [
 { #category : 'as yet unclassified' }
 NotebookJsonReader >> createCodeCell: cell [
 
-	| famixNBCell outputs sourceAnchor pythonEntities startLine current_comment startPos endPos entities |
+	| famixNBCell outputs startPos endPos entities |
 	famixNBCell := FamixNotebookCodeCell new
 		               mooseModel: model;
 		               executionCount: (cell at: 'execution_count');
 		               id: (cell at: 'id');
+							cellId: current_cell; 
 		               metadata: (cell at: 'metadata');
 		               yourself.
 
