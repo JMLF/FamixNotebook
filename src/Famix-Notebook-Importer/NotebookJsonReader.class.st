@@ -23,37 +23,48 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-NotebookJsonReader >> createCodeCell: cell [ 
+NotebookJsonReader >> allModelEntitiesFrom: startPos to: endPos [
 
-	| famixNBCell outputs sourceAnchor pythonEntities startLine current_comment startPos |
+	| sA entities |
+	sA := pythonModel allWithType: FamixPythonIndexedFileAnchor.
+	entities := sA select: [ :e |
+		            e startPos > startPos and: [ e startPos < endPos ] ].
+	^ entities collect: [ :e | e element ]
+]
+
+{ #category : 'as yet unclassified' }
+NotebookJsonReader >> createCodeCell: cell [
+
+	| famixNBCell outputs sourceAnchor pythonEntities startLine current_comment startPos endPos entities |
 	famixNBCell := FamixNotebookCodeCell new
 		               mooseModel: model;
 		               executionCount: (cell at: 'execution_count');
 		               id: (cell at: 'id');
 		               metadata: (cell at: 'metadata');
-			               yourself.
+		               yourself.
 
 	outputs := (cell at: 'outputs') ifNotNil: [ :outputs |
 		           outputs collect: [ :output | self createOutput: output ] ].
 	outputs ifNotEmpty: [
 		outputs do: [ :famixNBOutput | famixNBCell output: famixNBOutput ] ].
 
-	"Smacc renvoi les comment avec un cr, c'est pourquoi pas de = directement"
-	current_comment := pythonModel allComments select: [ :c | (c content beginsWith: '#cell-') and: [ c content includesSubstring: (current_cell asString) ] ]. 
-	"Il faudrait gerer le cas ou l'on a plus d'un resultat pour le current comment"
-	startPos := current_comment first sourceAnchor startPos. 
 
-	1halt.
-	sourceAnchor := self createSourceAnchor: (cell at: 'source').
-	famixNBCell sourceAnchor: sourceAnchor.
+	startPos := self currentCellStartPos.
+	endPos := self nextCellStartPos.
+	current_cell := current_cell + 1.
+
+	entities := self allModelEntitiesFrom: startPos to: endPos.
+	entities do: [ :entity | famixNBCell addEntity: entity ].
+	"1 halt."
+	"sourceAnchor := self createSourceAnchor: (cell at: 'source')."
+	"famixNBCell sourceAnchor: sourceAnchor."
 
 
-	pythonEntities := self createPythonEntities: sourceAnchor.
+	"pythonEntities := self createPythonEntities: sourceAnchor."
 	"see if it work -> does not"
-	self flag: #fixme.
+	"self flag: #fixme."
 	"link between python entities and code cell need some work"
-	pythonEntities ifNotEmpty: [
-		pythonEntities do: [ :entity | famixNBCell addEntity: entity ] ]
+	"pythonEntities ifNotEmpty: [pythonEntities do: [ :entity | famixNBCell addEntity: entity ] ]"
 ]
 
 { #category : 'as yet unclassified' }
@@ -115,6 +126,17 @@ NotebookJsonReader >> createSourceAnchor: aSourceArray [
 		                  yourself
 ]
 
+{ #category : 'as yet unclassified' }
+NotebookJsonReader >> currentCellStartPos [
+
+	| current_comment startPos |
+		"Smacc renvoi les comment avec un cr, c'est pourquoi pas de = directement"
+	current_comment := pythonModel allComments select: [ :c | (c content beginsWith: '#cell-') and: [ c content includesSubstring: (current_cell asString) ] ]. 
+	self flag: #todo.
+	"Il faudrait gerer le cas ou l'on a plus d'un resultat pour le current comment"
+	^ startPos := current_comment first sourceAnchor startPos. 
+]
+
 { #category : 'initialization' }
 NotebookJsonReader >> initialize [ 
 
@@ -131,6 +153,18 @@ NotebookJsonReader >> model [
 NotebookJsonReader >> model: anObject [
 
 	model := anObject
+]
+
+{ #category : 'as yet unclassified' }
+NotebookJsonReader >> nextCellStartPos [
+
+	| current_comment startPos |
+		"Smacc renvoi les comment avec un cr, c'est pourquoi pas de = directement"
+	current_comment := pythonModel allComments select: [ :c | (c content beginsWith: '#cell-') and: [ c content includesSubstring: ((current_cell + 1) asString) ] ]. 
+	self flag: #todo.
+	"Il faudrait gerer le cas ou l'on a plus d'un resultat pour le current comment"
+	current_comment ifEmpty: [ ^pythonModel allModules first sourceAnchor endPos  ] .
+	^ startPos := current_comment first sourceAnchor startPos. 
 ]
 
 { #category : 'parsing' }
