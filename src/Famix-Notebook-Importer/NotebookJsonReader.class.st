@@ -3,8 +3,11 @@
 
 file := '/Users/mignard/Documents/work/mooseDemo/pythonvarusage/Split_with_train_override.ipynb' asFileReference.
 
-NotebookJsonReader new readFrom: file.
+nbJsonReader := NotebookJsonReader new.
+nbJsonReader readFrom: file.
 
+""To get the build python model :""
+nbJsonReader pythonModel 
 "
 Class {
 	#name : 'NotebookJsonReader',
@@ -39,7 +42,7 @@ NotebookJsonReader >> createCodeCell: cell [
 	famixNBCell := FamixNotebookCodeCell new
 		               mooseModel: model;
 		               executionCount: (cell at: 'execution_count');
-		               id: (cell at: 'id');
+		               id: (cell at: 'id' ifAbsent: [ 'null' ]);
 							cellId: current_cell; 
 		               metadata: (cell at: 'metadata');
 		               yourself.
@@ -75,7 +78,7 @@ NotebookJsonReader >> createMarkdownCell: cell [
 	famixNBCell := FamixNotebookTextCell new
 		               mooseModel: model;
 		               isMarkdown: true;
-		               id: (cell at: 'id');
+		               id: (cell at: 'id' ifAbsent: [ 'null' ]);
 		               "ToDo ajouter l'id dans le MM"
 							metadata:(cell at: 'metadata');
 		               content: (cell at: 'source');
@@ -88,9 +91,9 @@ NotebookJsonReader >> createOutput: anOutput [
 	| famixNBOutput |
 	famixNBOutput := FamixNotebookOutput new
 		               mooseModel: model;
-							data: (anOutput at: 'data');
-							metadata: (anOutput at: 'metadata');
-							output_type: (anOutput at: 'output_type');
+							data: (anOutput at: 'data' ifAbsent: ['null']);
+							metadata: (anOutput at: 'metadata' ifAbsent: ['null']);
+							output_type: (anOutput at: 'output_type' ifAbsent: ['null']);
 		               yourself.
 	^famixNBOutput 	
 ]
