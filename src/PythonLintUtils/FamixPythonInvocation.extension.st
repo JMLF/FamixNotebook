@@ -29,6 +29,7 @@ FamixPythonInvocation >> computeArgs [
 		i := i + 1 ].
 	end := i - 1.
 
+	(end - 1) >= 0 ifFalse: [ self error: 'Cannot create a string with size <0' ].
 	paramsAsString := text copyFrom: start + 1 to: end - 1.
 
 	paramsList := OrderedCollection new.
