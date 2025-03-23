@@ -34,5 +34,7 @@ BaselineOfFamixNotebook >> definePackages: spec [
 		package: 'Famix-Notebook-Entities'
 		with: [ spec requires: #( 'Famix-Notebook-Generator' ) ];
 		package: 'PythonLintUtils'
-		with: [ spec requires: #( 'Famix-Notebook-Entities' ) ]
+		with: [ spec requires: #( 'Famix-Notebook-Entities' ) ];
+		package: 'Famix-Notebook-Critics'
+		with: [ spec requires: #( 'PythonLintUtils' ) ]
 ]
