@@ -192,31 +192,35 @@ NotebookJsonReader >> pythonModel: anObject [
 ]
 
 { #category : 'meta-object-protocol' }
-NotebookJsonReader >> read: json [ 
+NotebookJsonReader >> read: json [
 	"Loads parsed json"
 
-	| i |
+	| nbformat nbminor |
 	json ifEmpty: [ cells := #(  ) ] ifNotEmpty: [
 		model := FamixNotebookModel new
 			         name: filename;
 			         yourself.
+
+		nbformat := json at: 'nbformat' ifAbsent: [ 4 ].
+		nbminor := json at: 'nbformat_minor' ifAbsent: [ 1 ].
+
 		cells := json at: 'cells'.
 
 		"tmp file to store the complete notebook"
 		fileReference := FileReference
 			                 newTempFilePrefix: 'pythonfullNB-'
 			                 suffix: '-entity.py'.
-			
-		i := 0. "Find a better way to do that"	
-		fileReference writeStreamDo: [ :stream |
-			cells do: [ :cell |
-				(cell at: 'cell_type') = 'code' ifTrue: [
-					stream nextPutAll: '#cell-',(i asString); cr.
-					(cell at: 'source') do: [ :line | 
-						stream nextPutAll: line.].
-					i := i + 1.
-					stream cr. ] ] ].
-		
+
+        (nbformat = 4 and: [ nbminor >= 1 ]) ifTrue: [
+            self writeCodeCellsAsLinesTo: fileReference
+        ] ifFalse: [
+            (nbformat = 4 and: [ nbminor = 0 ]) ifTrue: [
+                self writeCodeCellsAsSingleStringTo: fileReference
+            ] ifFalse: [
+                self error: 'Unsupported notebook format version: ', nbformat asString, '.', nbminor asString.
+            ].
+        ].
+
 		pythonModel := FamixPythonImporter import: fileReference.
 
 		cells do: [ :cell | self parseFromcell: cell ] ]
@@ -233,4 +237,40 @@ NotebookJsonReader >> readFrom: aFileReference [
 
 	^ model
 	"^ self createDataFrame"
+]
+
+{ #category : 'writing' }
+NotebookJsonReader >> writeCodeCellsAsLinesTo: fileReference [
+    | i |
+    i := 0.
+    fileReference writeStreamDo: [ :stream |
+        cells do: [ :cell |
+            (cell at: 'cell_type') = 'code' ifTrue: [
+                stream nextPutAll: '#cell-', i asString; cr.
+                (cell at: 'source') do: [ :line |
+                    stream nextPutAll: line ].
+                i := i + 1.
+                stream cr.
+            ].
+        ].
+    ].
+
+]
+
+{ #category : 'writing' }
+NotebookJsonReader >> writeCodeCellsAsSingleStringTo: fileReference [
+"From code cells, this will add all the sources in fileReference with comments separators (works on old versions of notebooks where the source code was stored as a single string in each cells)"
+    | i |
+    i := 0.
+    fileReference writeStreamDo: [ :stream |
+        cells do: [ :cell |
+            (cell at: 'cell_type') = 'code' ifTrue: [
+                stream nextPutAll: '#cell-', i asString; cr.
+                stream nextPutAll: (cell at: 'source').
+                i := i + 1.
+                stream cr.
+            ].
+        ].
+    ].
+
 ]
