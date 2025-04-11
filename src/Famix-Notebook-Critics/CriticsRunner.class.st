@@ -86,8 +86,8 @@ exportBrowserModel := MiExportModel new.
 exportBrowserModel entitiesList: violations.
 
 "Remove default column"
-"exportBrowserModel removeColumnForQueryNamed: #Name.
-exportBrowserModel removeColumnForQueryNamed: #Type."
+exportBrowserModel removeColumnForQueryNamed: #Name.
+exportBrowserModel removeColumnForQueryNamed: #Type.
 
 "export"
 exportBrowserModel addColumnForQuery: [ :violation | violation violatedCondition name ] withName: #'Rule name'.
@@ -95,6 +95,7 @@ exportBrowserModel addColumnForQuery: [ :violation | violation violatedCondition
 exportBrowserModel addColumnForQuery: [ :violation | violation violatedCondition rulesId.  ] withName: #'Rule ID'.
 
 exportBrowserModel addColumnForQuery: [ :violation | violation violatingEntity mooseName ] withName: #'Violating Entity'.
+exportBrowserModel addColumnForQuery: [ :violation | violation violatingEntity sourceText ] withName: #'Source text'.
 exportBrowserModel addColumnForQuery: [ :violation | 'cell : ',(violation violatingEntity cellId asString) ] withName: #'Violating position'.
 1halt.
 exportFile asFileReference writeStreamDo: [ :stream | exportBrowserModel writeCSVOn: stream ].
