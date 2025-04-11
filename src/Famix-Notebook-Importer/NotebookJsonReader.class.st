@@ -241,6 +241,8 @@ NotebookJsonReader >> readFrom: aFileReference [
 
 { #category : 'writing' }
 NotebookJsonReader >> writeCodeCellsAsLinesTo: fileReference [
+"From code cells, this will add all the sources in fileReference with comments separators"
+
     | i |
     i := 0.
     fileReference writeStreamDo: [ :stream |
