@@ -3,13 +3,13 @@ Extension { #name : 'FamixCBCondition' }
 { #category : '*Famix-Notebook-Critics' }
 FamixCBCondition >> rulesId [
 
-	<FMProperty: #rulesId type: #String>
+    <FMProperty: #rulesId type: #String>
 	<FMComment: 'Unique id for each conditions'>
-	^rulesId.
+    ^ self attributeAt: #rulesId ifAbsent: [  ]
 ]
 
 { #category : '*Famix-Notebook-Critics' }
 FamixCBCondition >> rulesId: anObject [
 
-	rulesId := anObject
+    self attributeAt: #rulesId  put: anObject .
 ]
