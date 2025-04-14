@@ -103,7 +103,6 @@ infos := Dictionary newFromPairs: {
 jsonArray add: infos.
 1halt.
 exportFile asFileReference writeStreamDo: [ :stream |
-	|writer|
     (NeoJSONWriter on: stream)
      nextPutAll: jsonArray;
       close.
