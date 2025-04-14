@@ -1,6 +1,15 @@
 Extension { #name : 'FamixPythonEntity' }
 
 { #category : '*Famix-Notebook-Entities-accessing' }
+FamixPythonEntity >> cellId [ 
+	"Relation named: #codeCell type: #FamixNotebookCodeCell opposite: #entities"
+
+	| cell |
+	cell:= self attributeAt: #codeCell ifAbsent: [ 1halt. "should be present" ].
+	^ cell cellId. 
+]
+
+{ #category : '*Famix-Notebook-Entities-accessing' }
 FamixPythonEntity >> codeCell [
 	"Relation named: #codeCell type: #FamixNotebookCodeCell opposite: #entities"
 
