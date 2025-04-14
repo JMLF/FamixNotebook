@@ -75,31 +75,39 @@ CriticsRunner >> rulesFile: anObject [
 { #category : 'as yet unclassified' }
 CriticsRunner >> runAndExport [
 
-| criticBrowser violations exportBrowserModel |
+| criticBrowser violations exportBrowserModel violationAsDict jsonArray infos |
 criticBrowser := MiCriticBrowser on: MiCriticBrowser newModel.
 rulesFile asFileReference readStreamDo: [ :stream | criticBrowser importRulesFromStream: stream ].
 criticBrowser model setEntities: notebookModel.
 criticBrowser model run.
 violations := criticBrowser model getAllViolations.
 
-exportBrowserModel := MiExportModel new.
-exportBrowserModel entitiesList: violations.
+violationAsDict := [ :violation |
+    Dictionary newFromPairs: {
+        'Rule name' . violation violatedCondition name.
+        'Rule summary' . violation violatedCondition summary.
+        'Rule ID' . violation violatedCondition rulesId.
+        'Violating Entity' . violation violatingEntity mooseName.
+        'Source text' . violation violatingEntity sourceText.
+        'Violating position' . ('cell : ', violation violatingEntity cellId asString).
+    }
+].
 
-"Remove default column"
-exportBrowserModel removeColumnForQueryNamed: #Name.
-exportBrowserModel removeColumnForQueryNamed: #Type.
+jsonArray := (violations collect: violationAsDict) asCollection . 
 
-"export"
-exportBrowserModel addColumnForQuery: [ :violation | violation violatedCondition name ] withName: #'Rule name'.
-exportBrowserModel addColumnForQuery: [ :violation | violation violatedCondition summary ] withName: #'Rule summary'.
-exportBrowserModel addColumnForQuery: [ :violation | violation violatedCondition rulesId.  ] withName: #'Rule ID'.
-
-exportBrowserModel addColumnForQuery: [ :violation | violation violatingEntity mooseName ] withName: #'Violating Entity'.
-exportBrowserModel addColumnForQuery: [ :violation | violation violatingEntity sourceText ] withName: #'Source text'.
-exportBrowserModel addColumnForQuery: [ :violation | 'cell : ',(violation violatingEntity cellId asString) ] withName: #'Violating position'.
-
-
-exportFile asFileReference writeStreamDo: [ :stream | exportBrowserModel writeCSVOn: stream ].
+infos := Dictionary newFromPairs: {
+        'Nb code cells' . (notebookModel select: [ :p | p class = FamixNotebookCodeCell ]) size.
+        'Nb markdown cells' . (notebookModel select: [ :p | p class = FamixNotebookTextCell ]) size.
+		  "Ad total loc and loc per cells"
+    }.
+jsonArray add: infos.
+1halt.
+exportFile asFileReference writeStreamDo: [ :stream |
+	|writer|
+    (NeoJSONWriter on: stream)
+     nextPutAll: jsonArray;
+      close.
+].
 
 
 ]
