@@ -112,7 +112,10 @@ CriticsRunner >> runAndExport [
 			         'Total LOC'.
 			         (notebookModel select: [ :p |
 				          p class = FamixNotebookCodeCell ]) first entities first
-				         mooseModel allModules first sourceAnchor endLine }.
+				         mooseModel allModules first sourceAnchor endLine.
+			         'number of violation'.
+			         violations size }.
+
 
 	res := Dictionary new
 		       at: 'violations' put: jsonArray asOrderedCollection;

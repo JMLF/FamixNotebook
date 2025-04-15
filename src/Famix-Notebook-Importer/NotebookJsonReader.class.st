@@ -135,7 +135,7 @@ NotebookJsonReader >> currentCellStartPos [
 
 	| current_comment startPos |
 		"Smacc renvoi les comment avec un cr, c'est pourquoi pas de = directement"
-	current_comment := pythonModel allComments select: [ :c | (c content beginsWith: '#cell-') and: [ c content includesSubstring: (current_cell asString) ] ]. 
+	current_comment := pythonModel allComments select: [ :c | (c sourceText beginsWith: '#cell-') and: [ c sourceText includesSubstring: (current_cell asString) ] ]. 
 	self flag: #todo.
 	"Il faudrait gerer le cas ou l'on a plus d'un resultat pour le current comment"
 	^ startPos := current_comment first sourceAnchor startPos. 
