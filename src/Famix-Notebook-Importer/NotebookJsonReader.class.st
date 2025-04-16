@@ -211,15 +211,7 @@ NotebookJsonReader >> read: json [
 			                 newTempFilePrefix: 'pythonfullNB-'
 			                 suffix: '-entity.py'.
 
-        (nbformat = 4 and: [ nbminor >= 1 ]) ifTrue: [
-            self writeCodeCellsAsLinesTo: fileReference
-        ] ifFalse: [
-            (nbformat = 4 and: [ nbminor = 0 ]) ifTrue: [
-                self writeCodeCellsAsSingleStringTo: fileReference
-            ] ifFalse: [
-                self error: 'Unsupported notebook format version: ', nbformat asString, '.', nbminor asString.
-            ].
-        ].
+		self writeCodeCells: fileReference.
 
 		pythonModel := FamixPythonImporter import: fileReference.
 
@@ -240,39 +232,70 @@ NotebookJsonReader >> readFrom: aFileReference [
 ]
 
 { #category : 'writing' }
+NotebookJsonReader >> writeCodeCells: fileReference [
+	"From code cells, this will add all the sources in fileReference with comments separators"
+
+	| i |
+	i := 0.
+	fileReference writeStreamDo: [ :stream |
+		cells do: [ :cell |
+			(cell at: 'cell_type') = 'code' ifTrue: [
+				stream
+					nextPutAll: '#cell-' , i asString;
+					cr.
+				"Sometimes the source code is a single String and sometimes a List[String]"
+				(cell at: 'source') class = ByteString
+					ifTrue: [ stream nextPutAll: (cell at: 'source') ]
+					ifFalse: [
+					(cell at: 'source') do: [ :line | stream nextPutAll: line ] ].
+				i := i + 1.
+				stream cr ] ] ]
+]
+
+{ #category : 'writing' }
 NotebookJsonReader >> writeCodeCellsAsLinesTo: fileReference [
-"From code cells, this will add all the sources in fileReference with comments separators"
+	"From code cells, this will add all the sources in fileReference with comments separators"
 
-    | i |
-    i := 0.
-    fileReference writeStreamDo: [ :stream |
-        cells do: [ :cell |
-            (cell at: 'cell_type') = 'code' ifTrue: [
-                stream nextPutAll: '#cell-', i asString; cr.
-                (cell at: 'source') do: [ :line |
-                    stream nextPutAll: line ].
-                i := i + 1.
-                stream cr.
-            ].
-        ].
-    ].
+	| i |
+	self
+		deprecated: 'Use writeCodeCells: instead of current one'
+		on: '16 April 2025'
+		in:
+		'Pharo-12.0.0+SNAPSHOT.build.1570.sha.3dafb8a476dfe88afa5aa6bf7b148beb9c11003f (64 Bit)'.
+	i := 0.
+	fileReference writeStreamDo: [ :stream |
+		cells do: [ :cell |
+			(cell at: 'cell_type') = 'code' ifTrue: [
+				stream
+					nextPutAll: '#cell-' , i asString;
+					cr.
 
+				(cell at: 'source') class = ByteString
+					ifTrue: [ stream nextPutAll: (cell at: 'source') ]
+					ifFalse: [
+					(cell at: 'source') do: [ :line | stream nextPutAll: line ] ].
+				i := i + 1.
+				stream cr ] ] ]
 ]
 
 { #category : 'writing' }
 NotebookJsonReader >> writeCodeCellsAsSingleStringTo: fileReference [
-"From code cells, this will add all the sources in fileReference with comments separators (works on old versions of notebooks where the source code was stored as a single string in each cells)"
-    | i |
-    i := 0.
-    fileReference writeStreamDo: [ :stream |
-        cells do: [ :cell |
-            (cell at: 'cell_type') = 'code' ifTrue: [
-                stream nextPutAll: '#cell-', i asString; cr.
-                stream nextPutAll: (cell at: 'source').
-                i := i + 1.
-                stream cr.
-            ].
-        ].
-    ].
+	"From code cells, this will add all the sources in fileReference with comments separators (works on old versions of notebooks where the source code was stored as a single string in each cells)"
 
+	| i |
+	self
+		deprecated: 'Use writeCodeCells: instead of current one'
+		on: '16 April 2025'
+		in:
+		'Pharo-12.0.0+SNAPSHOT.build.1570.sha.3dafb8a476dfe88afa5aa6bf7b148beb9c11003f (64 Bit)'.
+	i := 0.
+	fileReference writeStreamDo: [ :stream |
+		cells do: [ :cell |
+			(cell at: 'cell_type') = 'code' ifTrue: [
+				stream
+					nextPutAll: '#cell-' , i asString;
+					cr.
+				stream nextPutAll: (cell at: 'source').
+				i := i + 1.
+				stream cr ] ] ]
 ]
