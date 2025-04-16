@@ -94,6 +94,12 @@ FamixNotebookCodeCell >> executionCount: anObject [
 	executionCount := anObject
 ]
 
+{ #category : 'printing' }
+FamixNotebookCodeCell >> mooseNameOn: aStream [
+
+	aStream nextPutAll: 'cell-',(cellId asString). 
+]
+
 { #category : 'accessing' }
 FamixNotebookCodeCell >> output [
 	"Relation named: #output type: #FamixNotebookOutput opposite: #codeCell"

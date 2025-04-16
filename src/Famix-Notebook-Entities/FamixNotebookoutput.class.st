@@ -85,6 +85,12 @@ FamixNotebookOutput >> metadata: anObject [
 	metadata := anObject
 ]
 
+{ #category : 'printing' }
+FamixNotebookOutput >> mooseNameOn: aStream [
+
+aStream nextPutAll: (output_type asString). 
+]
+
 { #category : 'accessing' }
 FamixNotebookOutput >> output_type [
 

@@ -60,6 +60,7 @@ FamixNotebookgenerator >> defineHierarchy [
 	"codeCell --|> sourcedEntity." "Code precedent ne casse pas mais le model semble ne pas etre bon => pas d'heritage multiple" 
 	
 	textCell --|> cell.
+	textCell --|> #TSourceEntity.
 	"Devrait probablement utiliser TSourceEntity egalement"
 ]
 

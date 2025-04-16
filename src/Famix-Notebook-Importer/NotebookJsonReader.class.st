@@ -38,12 +38,12 @@ NotebookJsonReader >> allModelEntitiesFrom: startPos to: endPos [
 { #category : 'as yet unclassified' }
 NotebookJsonReader >> createCodeCell: cell [
 
-	| famixNBCell outputs startPos endPos entities |
+	| famixNBCell outputs startPos endPos entities sourceAnchor |
 	famixNBCell := FamixNotebookCodeCell new
 		               mooseModel: model;
 		               executionCount: (cell at: 'execution_count');
 		               id: (cell at: 'id' ifAbsent: [ 'null' ]);
-							cellId: current_cell; 
+		               cellId: current_cell;
 		               metadata: (cell at: 'metadata');
 		               yourself.
 
@@ -59,22 +59,15 @@ NotebookJsonReader >> createCodeCell: cell [
 
 	entities := self allModelEntitiesFrom: startPos to: endPos.
 	entities do: [ :entity | famixNBCell addEntity: entity ].
-	"1 halt."
-	"sourceAnchor := self createSourceAnchor: (cell at: 'source')."
-	"famixNBCell sourceAnchor: sourceAnchor."
 
-
-	"pythonEntities := self createPythonEntities: sourceAnchor."
-	"see if it work -> does not"
-	"self flag: #fixme."
-	"link between python entities and code cell need some work"
-	"pythonEntities ifNotEmpty: [pythonEntities do: [ :entity | famixNBCell addEntity: entity ] ]"
+	sourceAnchor := self createSourceAnchor: (cell at: 'source').
+	famixNBCell sourceAnchor: sourceAnchor
 ]
 
 { #category : 'as yet unclassified' }
 NotebookJsonReader >> createMarkdownCell: cell [ 
 
-	| famixNBCell |
+	| famixNBCell sourceAnchor |
 	famixNBCell := FamixNotebookTextCell new
 		               mooseModel: model;
 		               isMarkdown: true;
@@ -82,7 +75,10 @@ NotebookJsonReader >> createMarkdownCell: cell [
 		               "ToDo ajouter l'id dans le MM"
 							metadata:(cell at: 'metadata');
 		               content: (cell at: 'source');
-		               yourself
+		               yourself.
+	
+	sourceAnchor := self createSourceAnchor: (cell at: 'source').
+	famixNBCell sourceAnchor: sourceAnchor
 ]
 
 { #category : 'as yet unclassified' }
@@ -120,11 +116,15 @@ NotebookJsonReader >> createPythonEntities: sourceAnchor [
 ]
 
 { #category : 'as yet unclassified' }
-NotebookJsonReader >> createSourceAnchor: aSourceArray [ 
+NotebookJsonReader >> createSourceAnchor: aSource [
+	"Sould refacto this to merge logic from writeCodeCells and this"
 
 	| sourceText sourceAnchor |
-	sourceText := String streamContents: [ :stream |
-		              aSourceArray do: [ :each | stream nextPutAll: each ] ].
+	sourceText := aSource class = ByteString
+		              ifTrue: [ aSource ]
+		              ifFalse: [
+			              String streamContents: [ :stream |
+				              aSource do: [ :each | stream nextPutAll: each ] ] ].
 	^ sourceAnchor := FamixNotebookSourceTextAnchor new
 		                  source: sourceText;
 		                  yourself
