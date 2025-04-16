@@ -85,12 +85,14 @@ CriticsRunner >> runAndExport [
 	"Construire des dict de dict pour un meilleur output json"
 	violationAsDict := [ :violation |
 	                   Dictionary newFromPairs: {
+			                   'Rule ID'.
+			                   violation violatedCondition rulesId.
 			                   'Rule name'.
 			                   violation violatedCondition name.
 			                   'Rule summary'.
 			                   violation violatedCondition summary.
-			                   'Rule ID'.
-			                   violation violatedCondition rulesId.
+			                   'Severity'.
+			                   violation violatedCondition severity title.
 			                   'Violating Entity'.
 			                   violation violatingEntity mooseName.
 			                   'Source text'.
