@@ -59,7 +59,7 @@ NotebookJsonReader >> createCodeCell: cell [
 
 	entities := self allModelEntitiesFrom: startPos to: endPos.
 	entities do: [ :entity | famixNBCell addEntity: entity ].
-
+"	1halt."
 	sourceAnchor := self createSourceAnchor: (cell at: 'source').
 	famixNBCell sourceAnchor: sourceAnchor
 ]
@@ -120,8 +120,9 @@ NotebookJsonReader >> createSourceAnchor: aSource [
 	"Sould refacto this to merge logic from writeCodeCells and this"
 
 	| sourceText sourceAnchor |
-	sourceText := aSource class = ByteString
-		              ifTrue: [ aSource ]
+		self flag: #TODO . "Regler cette affaire de choix par class, suivant certain notebook on est sur des sting different "
+	sourceText := (aSource class = ByteString or: [ aSource class = WideString ]) 
+		              ifTrue: [ aSource asString ]
 		              ifFalse: [
 			              String streamContents: [ :stream |
 				              aSource do: [ :each | stream nextPutAll: each ] ] ].
@@ -134,11 +135,13 @@ NotebookJsonReader >> createSourceAnchor: aSource [
 NotebookJsonReader >> currentCellStartPos [
 
 	| current_comment startPos |
-		"Smacc renvoi les comment avec un cr, c'est pourquoi pas de = directement"
-	current_comment := pythonModel allComments select: [ :c | (c sourceText beginsWith: '#cell-') and: [ c sourceText includesSubstring: (current_cell asString) ] ]. 
+	"Smacc renvoi les comment avec un cr, c'est pourquoi pas de = directement"
+	current_comment := pythonModel allComments select: [ :c |
+		                   c sourceText includesSubstring:
+			                   '#cell-' , current_cell asString ].
 	self flag: #todo.
 	"Il faudrait gerer le cas ou l'on a plus d'un resultat pour le current comment"
-	^ startPos := current_comment first sourceAnchor startPos. 
+	^ startPos := current_comment first sourceAnchor startPos
 ]
 
 { #category : 'initialization' }
@@ -163,12 +166,15 @@ NotebookJsonReader >> model: anObject [
 NotebookJsonReader >> nextCellStartPos [
 
 	| current_comment startPos |
-		"Smacc renvoi les comment avec un cr, c'est pourquoi pas de = directement"
-	current_comment := pythonModel allComments select: [ :c | (c sourceText beginsWith: '#cell-') and: [ c sourceText includesSubstring: ((current_cell + 1) asString) ] ]. 
+	"Smacc renvoi les comment avec un cr, c'est pourquoi pas de = directement"
+	current_comment := pythonModel allComments select: [ :c |
+		                   c sourceText includesSubstring:
+			                   '#cell-' , (current_cell + 1) asString ].
 	self flag: #todo.
 	"Il faudrait gerer le cas ou l'on a plus d'un resultat pour le current comment"
-	current_comment ifEmpty: [ ^pythonModel allModules first sourceAnchor endPos  ] .
-	^ startPos := current_comment first sourceAnchor startPos. 
+	current_comment ifEmpty: [
+		^ pythonModel allModules first sourceAnchor endPos ].
+	^ startPos := current_comment first sourceAnchor startPos
 ]
 
 { #category : 'parsing' }
@@ -244,7 +250,9 @@ NotebookJsonReader >> writeCodeCells: fileReference [
 					nextPutAll: '#cell-' , i asString;
 					cr.
 				"Sometimes the source code is a single String and sometimes a List[String]"
-				(cell at: 'source') class = ByteString
+				self flag: #TODO. "Same as sourceAnchor and others class check is not so great"
+				((cell at: 'source') class = ByteString or: [
+					 (cell at: 'source') class = WideString ])
 					ifTrue: [ stream nextPutAll: (cell at: 'source') ]
 					ifFalse: [
 					(cell at: 'source') do: [ :line | stream nextPutAll: line ] ].
