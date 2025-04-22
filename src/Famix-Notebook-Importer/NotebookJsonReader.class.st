@@ -120,12 +120,14 @@ NotebookJsonReader >> createSourceAnchor: aSource [
 	"Sould refacto this to merge logic from writeCodeCells and this"
 
 	| sourceText sourceAnchor |
-		self flag: #TODO . "Regler cette affaire de choix par class, suivant certain notebook on est sur des sting different "
-	sourceText := (aSource class = ByteString or: [ aSource class = WideString ]) 
+	self flag: #TODO. "Regler cette affaire de choix par class, suivant certain notebook on est sur des sting different "
+	sourceText := (aSource class = ByteString or: [
+		               aSource class = WideString ])
 		              ifTrue: [ aSource asString ]
 		              ifFalse: [
 			              String streamContents: [ :stream |
 				              aSource do: [ :each | stream nextPutAll: each ] ] ].
+
 	^ sourceAnchor := FamixNotebookSourceTextAnchor new
 		                  source: sourceText;
 		                  yourself

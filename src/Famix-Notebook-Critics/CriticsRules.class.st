@@ -12,6 +12,17 @@ CriticsRules >> allCodeCells: aNotebookModel [
 ]
 
 { #category : 'as yet unclassified' }
+CriticsRules >> notebookNameRespectConventions: aNotebookModel [
+
+	| nameWithoutExtension |
+	nameWithoutExtension := (aNotebookModel name copyUpToLast: $.)
+		                        ifNil: [ aNotebookModel name ].
+
+	^ ((#( 'Untitled' ) includes: nameWithoutExtension) or: [
+		   nameWithoutExtension size <= 2 ]) not
+]
+
+{ #category : 'as yet unclassified' }
 CriticsRules >> topTopBottomExection: aNotebookModel [
 
 	| allCodeCells index res |
