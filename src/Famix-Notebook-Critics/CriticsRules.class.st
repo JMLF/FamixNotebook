@@ -1,9 +1,68 @@
 Class {
 	#name : 'CriticsRules',
 	#superclass : 'Object',
+	#classVars : [
+		'SkRandomAppi'
+	],
 	#category : 'Famix-Notebook-Critics',
 	#package : 'Famix-Notebook-Critics'
 }
+
+{ #category : 'as yet unclassified' }
+CriticsRules class >> sklearnApiWithRandomness [
+    SkRandomAppi ifNil: [ SkRandomAppi := Set withAll: #(
+        "Classifieurs"
+        LogisticRegression
+        DecisionTreeClassifier
+        RandomForestClassifier
+        GradientBoostingClassifier
+        ExtraTreesClassifier
+        AdaBoostClassifier
+        BaggingClassifier
+        MLPClassifier
+        SGDClassifier
+        KNeighborsClassifier
+        SVC
+
+        "Régression"
+        DecisionTreeRegressor
+        RandomForestRegressor
+        GradientBoostingRegressor
+        ExtraTreesRegressor
+        AdaBoostRegressor
+        BaggingRegressor
+        MLPRegressor
+        SGDRegressor
+
+        "Clustering"
+        KMeans
+        MiniBatchKMeans
+        Birch
+        AffinityPropagation
+        SpectralClustering
+
+        "Model selection & autres"
+        train_test_split
+        ShuffleSplit
+        StratifiedShuffleSplit
+        KFold
+        StratifiedKFold
+        GroupKFold
+        cross_val_score
+        cross_validate
+
+        "Decomposition"
+        PCA
+        TruncatedSVD
+        FastICA
+        NMF
+
+        "Other"
+        PermutationImportance
+        SelectFromModel
+    ) ].
+    ^ SkRandomAppi
+]
 
 { #category : 'as yet unclassified' }
 CriticsRules >> allCodeCells: aNotebookModel [
