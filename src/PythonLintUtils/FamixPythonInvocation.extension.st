@@ -4,6 +4,11 @@ Extension { #name : 'FamixPythonInvocation' }
 FamixPythonInvocation >> arguments [
 
 	| text start end paramsAsString res |
+	self
+		deprecated: 'Use computeArgs instead of current one'
+		on: '23 April 2025'
+		in:
+		'Pharo-12.0.0+SNAPSHOT.build.1570.sha.3dafb8a476dfe88afa5aa6bf7b148beb9c11003f (64 Bit)'.
 	text := self sourceAnchor sourceText.
 	start := text indexOf: $(.
 	end := text indexOf: $).
