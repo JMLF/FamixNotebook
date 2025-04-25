@@ -2,11 +2,49 @@ Class {
 	#name : 'CriticsRules',
 	#superclass : 'Object',
 	#classVars : [
+		'PandasInplaceSet',
 		'SkRandomAppi'
 	],
 	#category : 'Famix-Notebook-Critics',
 	#package : 'Famix-Notebook-Critics'
 }
+
+{ #category : 'as yet unclassified' }
+CriticsRules class >> pandasInplaceMethods [
+    PandasInplaceSet ifNil: [ PandasInplaceSet := Set withAll: #(
+        drop
+        drop_duplicates
+        dropna
+        rename
+		  rename_axis
+        pop 
+        sort_values
+        sort_index
+        reset_index
+        set_index
+        fillna
+        replace
+        update
+        set_axis
+        set_value
+        set_flags 
+        mask
+        where
+		  query
+		  clip
+		  eval
+		  backfill
+		  bfill
+		  ffill
+		  fillna
+		  interpolate
+		  pad
+        "Attention: certaines méthodes in-place existent aussi sur Series"
+        
+    ) ].
+    ^ PandasInplaceSet
+
+]
 
 { #category : 'as yet unclassified' }
 CriticsRules class >> sklearnApiWithRandomness [

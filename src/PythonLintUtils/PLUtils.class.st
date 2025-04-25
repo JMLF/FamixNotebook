@@ -145,6 +145,24 @@ PLUtils >> getVarAccessesOccurence [
 	^ (model allAccesses collect: #variable) asBag
 ]
 
+{ #category : 'testing' }
+PLUtils >> isEntityImportedOrParentOfAnImport: anEntityName [
+
+	^ model allImports anySatisfy: [ :import |
+		  | entity match |
+		  entity := import importedEntity.
+		  entity notNil and: [
+			  entity name = anEntityName or: [
+				  | parent found |
+				  found := false.
+				  parent := entity.
+				  [ parent parentPackage notNil and: [ found not ] ] whileTrue: [
+					  parent := parent parentPackage.
+					  parent name = anEntityName ifTrue: [ found := true ] ].
+
+				  found ] ] ]
+]
+
 { #category : 'invocation' }
 PLUtils >> isEntityNameAPackageInvoked: anEntityName [
 
