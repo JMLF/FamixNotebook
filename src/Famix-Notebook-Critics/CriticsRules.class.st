@@ -273,8 +273,74 @@ CriticsRules >> allCodeCells: aNotebookModel [
 ]
 
 { #category : 'as yet unclassified' }
-CriticsRules >> notebookNameRespectConventions: aNotebookModel [
+CriticsRules >> buildReport: aNotebookModel [
 
+| manualViolations |
+
+self flag: #todo. "Mettre cette methode et les autres dans le runner, dans cette classe on ne va laisser que les regles"
+
+manualViolations := OrderedCollection new.
+
+(self notebookNameRespectConventions: aNotebookModel) ifFalse: [
+    manualViolations add: (self buildViolationDictionaryFrom: (
+        Dictionary newFromPairs: {
+            #rulesId. '20'.
+            #name. 'Notebook name convention'.
+            #summary. 'A notebook should be named properly'.
+            #severityTitle. 'warning'.
+            #mooseName. 'notebook'.
+            #sourceText. ''.
+            #pos. 'file'
+        }
+    ))
+].
+
+(self topTopBottomExection: aNotebookModel) ifFalse: [
+    manualViolations add: (self buildViolationDictionaryFrom: (
+        Dictionary newFromPairs: {
+            #rulesId. '21'.
+            #name. 'Notebook execution order'.
+            #summary. 'A notebook should be run top to bottom'.
+            #severityTitle. 'warning'.
+            #mooseName. 'notebook'.
+            #sourceText. ''.
+            #pos. 'file'
+        }
+    ))
+].
+
+^manualViolations
+]
+
+{ #category : 'as yet unclassified' }
+CriticsRules >> buildViolationDictionaryFrom: anObject [
+    anObject isDictionary ifTrue: [
+        ^ Dictionary newFromPairs: {
+            'Rule ID'. anObject at: #rulesId.
+            'Rule name'. anObject at: #name.
+            'Rule summary'. anObject at: #summary.
+            'Severity'. anObject at: #severityTitle.
+            'Violating Entity'. anObject at: #mooseName.
+            'Source text'. anObject at: #sourceText.
+            'Violating position'. anObject at: #pos
+        }
+    ].
+
+    "Sinon c'est un vrai Violation"
+    ^ Dictionary newFromPairs: {
+        'Rule ID'. anObject violatedCondition rulesId.
+        'Rule name'. anObject violatedCondition name.
+        'Rule summary'. anObject violatedCondition summary.
+        'Severity'. anObject violatedCondition severity title.
+        'Violating Entity'. anObject violatingEntity mooseName.
+        'Source text'. anObject violatingEntity sourceText.
+        'Violating position'. ('cell : ', anObject violatingEntity cellId asString)
+    }.
+]
+
+{ #category : 'as yet unclassified' }
+CriticsRules >> notebookNameRespectConventions: aNotebookModel [
+"Faire evoluer pour s'assurer qu'il ne contient ni Untitled et est composer que de charactere portable"
 	| nameWithoutExtension |
 	nameWithoutExtension := (aNotebookModel name copyUpToLast: $.)
 		                        ifNil: [ aNotebookModel name ].

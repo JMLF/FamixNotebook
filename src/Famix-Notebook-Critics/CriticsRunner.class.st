@@ -8,7 +8,8 @@ Class {
 		'rulesFile',
 		'notebookModel',
 		'exportFile',
-		'notebookReader'
+		'notebookReader',
+		'criticRules'
 	],
 	#category : 'Famix-Notebook-Critics',
 	#package : 'Famix-Notebook-Critics'
@@ -46,6 +47,7 @@ CriticsRunner >> exportFile: anObject [
 CriticsRunner >> initialize [ 
 
 	notebookReader := NotebookJsonReader new.
+	criticRules := CriticsRules new.
 ]
 
 { #category : 'accessing' }
@@ -75,7 +77,7 @@ CriticsRunner >> rulesFile: anObject [
 { #category : 'as yet unclassified' }
 CriticsRunner >> runAndExport [
 
-	| criticBrowser violations violationAsDict jsonArray infos res |
+	| criticBrowser violations violationAsDict jsonArray infos res criticBrowserViolations |
 	criticBrowser := MiCriticBrowser on: MiCriticBrowser newModel.
 	rulesFile asFileReference readStreamDo: [ :stream |
 		criticBrowser importRulesFromStream: stream ].
@@ -83,7 +85,7 @@ CriticsRunner >> runAndExport [
 	criticBrowser model run.
 	violations := criticBrowser model getAllViolations.
 	"Construire des dict de dict pour un meilleur output json"
-	violationAsDict := [ :violation |
+"	violationAsDict := [ :violation |
 	                   Dictionary newFromPairs: {
 			                   'Rule ID'.
 			                   violation violatedCondition rulesId.
@@ -99,9 +101,16 @@ CriticsRunner >> runAndExport [
 			                   violation violatingEntity sourceText.
 			                   'Violating position'.
 			                   ('cell : '
-			                    , violation violatingEntity cellId asString) } ].
+			                    , violation violatingEntity cellId asString) } ]."
+"jsonArray := violations collect: violationAsDict."
 
-	jsonArray := violations collect: violationAsDict.
+
+criticBrowserViolations := violations collect: [ :violation |
+    criticRules buildViolationDictionaryFrom: violation
+].
+
+
+	jsonArray := criticBrowserViolations, (criticRules buildReport: notebookModel).
 
 	infos := Dictionary newFromPairs: {
 			         'Nb code cells'.
