@@ -3,6 +3,7 @@ Class {
 	#superclass : 'Object',
 	#classVars : [
 		'PandasInplaceSet',
+		'SkHyperParamApi',
 		'SkRandomAppi'
 	],
 	#category : 'Famix-Notebook-Critics',
@@ -43,6 +44,169 @@ CriticsRules class >> pandasInplaceMethods [
         
     ) ].
     ^ PandasInplaceSet
+
+]
+
+{ #category : 'as yet unclassified' }
+CriticsRules class >> sklearnApiWithHyperparameters [
+    SkHyperParamApi ifNil: [ SkHyperParamApi := Set withAll: #(
+        "Classification"
+        LogisticRegression
+        DecisionTreeClassifier
+        RandomForestClassifier
+        GradientBoostingClassifier
+        HistGradientBoostingClassifier
+        ExtraTreesClassifier
+        AdaBoostClassifier
+        BaggingClassifier
+        MLPClassifier
+        SGDClassifier
+        Perceptron
+        PassiveAggressiveClassifier
+        QuadraticDiscriminantAnalysis
+        GaussianProcessClassifier
+        VotingClassifier
+        StackingClassifier
+        CalibratedClassifierCV
+        KNeighborsClassifier
+        RadiusNeighborsClassifier
+        NearestCentroid
+        ComplementNB
+        MultinomialNB
+        BernoulliNB
+        CategoricalNB
+        GaussianNB
+        LinearDiscriminantAnalysis
+
+        "Regression"
+        LinearRegression
+        Ridge
+        RidgeCV
+        Lasso
+        LassoCV
+        ElasticNet
+        ElasticNetCV
+        LassoLars
+        LassoLarsCV
+        LassoLarsIC
+        OrthogonalMatchingPursuit
+        OrthogonalMatchingPursuitCV
+        BayesianRidge
+        ARDRegression
+        LogisticRegressionCV
+        DecisionTreeRegressor
+        RandomForestRegressor
+        GradientBoostingRegressor
+        HistGradientBoostingRegressor
+        ExtraTreesRegressor
+        AdaBoostRegressor
+        BaggingRegressor
+        MLPRegressor
+        SGDRegressor
+        HuberRegressor
+        RANSACRegressor
+        TheilSenRegressor
+        PassiveAggressiveRegressor
+        PoissonRegressor
+        TweedieRegressor
+        GammaRegressor
+        QuantileRegressor
+        StackingRegressor
+        VotingRegressor
+
+        "Clustering"
+        KMeans
+        MiniBatchKMeans
+        Birch
+        AffinityPropagation
+        SpectralClustering
+        GaussianMixture
+        BayesianGaussianMixture
+        MeanShift
+        AgglomerativeClustering
+        OPTICS
+        FeatureAgglomeration
+        DBSCAN
+
+        "Decomposition / Dimensionality Reduction"
+        PCA
+        IncrementalPCA
+        KernelPCA
+        TruncatedSVD
+        FastICA
+        NMF
+        FactorAnalysis
+        DictionaryLearning
+        MiniBatchDictionaryLearning
+        SparsePCA
+        MiniBatchSparsePCA
+        LatentDirichletAllocation
+
+        "Neighbors"
+        NearestNeighbors
+        KNeighborsRegressor
+        KNeighborsTransformer
+        RadiusNeighborsRegressor
+
+        "Feature selection"
+        SelectKBest
+        SelectPercentile
+        SelectFromModel
+        RFE
+        RFECV
+        SequentialFeatureSelector
+        GenericUnivariateSelect
+        mutual_info_classif
+        mutual_info_regression
+
+        "Embedding"
+        Isomap
+        LocallyLinearEmbedding
+        SpectralEmbedding
+        TSNE
+        MDS
+        GaussianRandomProjection
+        SparseRandomProjection
+
+        "Imputation / Preprocessing"
+        SimpleImputer
+        IterativeImputer
+        KNNImputer
+        PowerTransformer
+        QuantileTransformer
+        FunctionTransformer
+        RobustScaler
+        MinMaxScaler
+        MaxAbsScaler
+        StandardScaler
+        Normalizer
+        Binarizer
+        PolynomialFeatures
+        OneHotEncoder
+        OrdinalEncoder
+        LabelEncoder
+        MultiLabelBinarizer
+
+        "Ensemble"
+        BaggingClassifier
+        BaggingRegressor
+        RandomForestClassifier
+        RandomForestRegressor
+        ExtraTreesClassifier
+        ExtraTreesRegressor
+        AdaBoostClassifier
+        AdaBoostRegressor
+        GradientBoostingClassifier
+        GradientBoostingRegressor
+        HistGradientBoostingClassifier
+        HistGradientBoostingRegressor
+        VotingClassifier
+        VotingRegressor
+        StackingClassifier
+        StackingRegressor
+
+    ) ].
+    ^ SkHyperParamApi
 
 ]
 
