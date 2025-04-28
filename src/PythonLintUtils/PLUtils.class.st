@@ -146,6 +146,27 @@ PLUtils >> getVarAccessesOccurence [
 ]
 
 { #category : 'testing' }
+PLUtils >> isEntityAssignedInVar: anEntity [
+
+	| source line samePosVariables res |
+
+	source := anEntity sourceAnchor sourceText.
+	line := anEntity sourceAnchor startLine.
+
+
+	samePosVariables := model allAccesses select: [ :i |
+		                      i sourceAnchor startLine = line ].
+
+	samePosVariables ifEmpty: [ ^ false ].
+
+	res := samePosVariables select: [ :a | a isWrite and: [ a sourceAnchor sourceText includesSubstring: source ] ].
+	
+	res ifEmpty: [ ^ false ]. 
+
+	^ true
+]
+
+{ #category : 'testing' }
 PLUtils >> isEntityImportedOrParentOfAnImport: anEntityName [
 
 	^ model allImports anySatisfy: [ :import |
@@ -161,6 +182,31 @@ PLUtils >> isEntityImportedOrParentOfAnImport: anEntityName [
 					  parent name = anEntityName ifTrue: [ found := true ] ].
 
 				  found ] ] ]
+]
+
+{ #category : 'testing' }
+PLUtils >> isEntityInAnInvocation: anEntity [
+
+	| source line samePosInvocations otherInvocations |
+	self flag: #TODO.
+	"Pour des cas plus complexe, plusieurs invocation de l'entite sur la meme ligne en arguent de differentes fonction => ne fonctionne probablement pas"
+	source := anEntity sourceAnchor sourceText.
+	line := anEntity sourceAnchor startLine.
+
+
+
+	samePosInvocations := model allInvocations select: [ :i |
+		                      i sourceAnchor startLine = line ].
+
+	samePosInvocations size = 1 ifTrue: [ ^ false ].
+
+	otherInvocations := samePosInvocations reject: [ :i | i = anEntity ].
+
+	otherInvocations do: [ :i |
+		(i computeArgs anySatisfy: [ :a | a includesSubstring: source ])
+			ifTrue: [ ^ true ] ].
+
+	^ false
 ]
 
 { #category : 'invocation' }
