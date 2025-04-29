@@ -155,7 +155,6 @@ CriticsRules class >> sklearnApiWithHyperparameters [
         RFE
         RFECV
         SequentialFeatureSelector
-        GenericUnivariateSelect
         mutual_info_classif
         mutual_info_regression
 
@@ -175,17 +174,9 @@ CriticsRules class >> sklearnApiWithHyperparameters [
         PowerTransformer
         QuantileTransformer
         FunctionTransformer
-        RobustScaler
-        MinMaxScaler
-        MaxAbsScaler
-        StandardScaler
-        Normalizer
-        Binarizer
         PolynomialFeatures
         OneHotEncoder
         OrdinalEncoder
-        LabelEncoder
-        MultiLabelBinarizer
 
         "Ensemble"
         BaggingClassifier
@@ -213,7 +204,6 @@ CriticsRules class >> sklearnApiWithHyperparameters [
 { #category : 'as yet unclassified' }
 CriticsRules class >> sklearnApiWithRandomness [
     SkRandomAppi ifNil: [ SkRandomAppi := Set withAll: #(
-        "Classifieurs"
         LogisticRegression
         DecisionTreeClassifier
         RandomForestClassifier
@@ -225,8 +215,6 @@ CriticsRules class >> sklearnApiWithRandomness [
         SGDClassifier
         KNeighborsClassifier
         SVC
-
-        "Régression"
         DecisionTreeRegressor
         RandomForestRegressor
         GradientBoostingRegressor
@@ -235,15 +223,11 @@ CriticsRules class >> sklearnApiWithRandomness [
         BaggingRegressor
         MLPRegressor
         SGDRegressor
-
-        "Clustering"
         KMeans
         MiniBatchKMeans
         Birch
         AffinityPropagation
         SpectralClustering
-
-        "Model selection & autres"
         train_test_split
         ShuffleSplit
         StratifiedShuffleSplit
@@ -252,16 +236,28 @@ CriticsRules class >> sklearnApiWithRandomness [
         GroupKFold
         cross_val_score
         cross_validate
-
-        "Decomposition"
         PCA
         TruncatedSVD
         FastICA
         NMF
-
-        "Other"
         PermutationImportance
         SelectFromModel
+        mutual_info_regression
+        mutual_info_classif
+        LatentDirichletAllocation
+        MiniBatchSparsePCA
+        SparsePCA
+        MiniBatchDictionaryLearning
+        DictionaryLearning
+        FactorAnalysis
+        NMF
+        FastICA
+        TruncatedSVD
+        KernelPCA
+        BayesianGaussianMixture
+        GaussianMixture
+        SpectralClustering
+        AffinityPropagation
     ) ].
     ^ SkRandomAppi
 ]
