@@ -273,6 +273,21 @@ CriticsRules >> allCodeCells: aNotebookModel [
 ]
 
 { #category : 'as yet unclassified' }
+CriticsRules >> allTextCells: aNotebookModel [
+
+ ^ aNotebookModel select: [ :e | e class = FamixNotebookTextCell ]
+]
+
+{ #category : 'as yet unclassified' }
+CriticsRules >> allUnknowAccessOrReference: aNotebookModel [
+
+	| pythonModel |
+	pythonModel := self pythonModelOfNotebookModel: aNotebookModel.
+	^ pythonModel select: [ :e |
+		  e class = FamixPythonUnknowAccessOrReference ]
+]
+
+{ #category : 'as yet unclassified' }
 CriticsRules >> buildReport: aNotebookModel [
 
 | manualViolations |
@@ -281,29 +296,43 @@ self flag: #todo. "Mettre cette methode et les autres dans le runner, dans cette
 
 manualViolations := OrderedCollection new.
 
-(self notebookNameRespectConventions: aNotebookModel) ifFalse: [
+(self doesNotebookNamecontainUntitled: aNotebookModel) ifTrue: [
     manualViolations add: (self buildViolationDictionaryFrom: (
         Dictionary newFromPairs: {
             #rulesId. '20'.
-            #name. 'Notebook name convention'.
-            #summary. 'A notebook should be named properly'.
+            #name. 'Untitled notebook'.
+            #summary. 'The notebook still has the default title: Untitled[<number>].ipynb'.
             #severityTitle. 'warning'.
             #mooseName. 'notebook'.
-            #sourceText. ''.
+            #sourceText. aNotebookModel name.
             #pos. 'file'
         }
     ))
 ].
 
-(self topTopBottomExection: aNotebookModel) ifFalse: [
+(self doesNotebookNameUseValidCharset: aNotebookModel) ifFalse: [
     manualViolations add: (self buildViolationDictionaryFrom: (
         Dictionary newFromPairs: {
             #rulesId. '21'.
-            #name. 'Notebook execution order'.
-            #summary. 'A notebook should be run top to bottom'.
+            #name. 'Non portable chars in nb name'.
+            #summary. 'The notebook filename contains non-portable characters (i.e., characters outside the [A-Za-z0-9_.-] charset). Rename your notebook by using characters contained in the following portable charset: [A-Za-z0-9_.-].'.
             #severityTitle. 'warning'.
             #mooseName. 'notebook'.
-            #sourceText. ''.
+            #sourceText. aNotebookModel name.
+            #pos. 'file'
+        }
+    ))
+].
+
+(self isNotebookNameLongEnought: aNotebookModel) ifFalse: [
+    manualViolations add: (self buildViolationDictionaryFrom: (
+        Dictionary newFromPairs: {
+            #rulesId. '22'.
+            #name. 'Notebook name too short'.
+            #summary. 'Your notebook name name should be gratter than 2 characters'.
+            #severityTitle. 'warning'.
+            #mooseName. 'notebook'.
+            #sourceText. aNotebookModel name.
             #pos. 'file'
         }
     ))
@@ -339,6 +368,68 @@ CriticsRules >> buildViolationDictionaryFrom: anObject [
 ]
 
 { #category : 'as yet unclassified' }
+CriticsRules >> containTextCell: aNotebookModel [
+
+	^ (self allTextCells: aNotebookModel) isNotEmpty 
+]
+
+{ #category : 'as yet unclassified' }
+CriticsRules >> doesNotebookNameUseValidCharset: aNotebookModel [
+
+	| nameWithoutExtension |
+	nameWithoutExtension := (aNotebookModel name copyUpToLast: $.)
+		                        ifNil: [ aNotebookModel name ].
+
+	^ nameWithoutExtension matchesRegex: '^[A-Za-z0-9_.-]+$'
+]
+
+{ #category : 'as yet unclassified' }
+CriticsRules >> doesNotebookNamecontainUntitled: aNotebookModel [
+
+	| nameWithoutExtension |
+	nameWithoutExtension := (aNotebookModel name copyUpToLast: $.)
+		                        ifNil: [ aNotebookModel name ].
+
+	^ nameWithoutExtension includesSubstring: 'Untitled'
+]
+
+{ #category : 'testing' }
+CriticsRules >> isNotebookNameLongEnought: aNotebookModel [
+
+	| nameWithoutExtension |
+	nameWithoutExtension := (aNotebookModel name copyUpToLast: $.)
+		                        ifNil: [ aNotebookModel name ].
+
+	^ nameWithoutExtension size > 2
+]
+
+{ #category : 'as yet unclassified' }
+CriticsRules >> isNotebookTooLong: aNotebookModel [
+
+	| allCodeCells |
+	allCodeCells := self allCodeCells: aNotebookModel.
+
+	^ allCodeCells size > 50
+]
+
+{ #category : 'as yet unclassified' }
+CriticsRules >> isNotebookversionControlled: aNotebookModel [
+
+	| pythonModel version uAccessOrREf |
+	pythonModel := self pythonModelOfNotebookModel: aNotebookModel.
+	((pythonModel allInvocations anySatisfy: [ :i |
+		  i invokedEntity name = #watermark ]) and: [
+		 pythonModel allImports anySatisfy: [ :i |
+			 i importedEntity name = #watermark ] ]) ifTrue: [ ^ true ].
+
+	uAccessOrREf := self allUnknowAccessOrReference: aNotebookModel.
+	version := uAccessOrREf select: [ :u |
+		           u unknownEntity mooseName = #__version__ ].
+
+	^ version isNotEmpty
+]
+
+{ #category : 'as yet unclassified' }
 CriticsRules >> notebookNameRespectConventions: aNotebookModel [
 "Faire evoluer pour s'assurer qu'il ne contient ni Untitled et est composer que de charactere portable"
 	| nameWithoutExtension |
@@ -347,6 +438,12 @@ CriticsRules >> notebookNameRespectConventions: aNotebookModel [
 
 	^ ((#( 'Untitled' ) includes: nameWithoutExtension) or: [
 		   nameWithoutExtension size <= 2 ]) not
+]
+
+{ #category : 'as yet unclassified' }
+CriticsRules >> pythonModelOfNotebookModel: aNotebookModel [ 
+
+^(aNotebookModel select: [:e | e class = FamixNotebookCodeCell and: [ e entities isNotEmpty ] ]) first entities first mooseModel
 ]
 
 { #category : 'as yet unclassified' }
