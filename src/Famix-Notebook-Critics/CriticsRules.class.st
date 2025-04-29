@@ -338,6 +338,62 @@ manualViolations := OrderedCollection new.
     ))
 ].
 
+(self containTextCell: aNotebookModel) ifFalse: [
+    manualViolations add: (self buildViolationDictionaryFrom: (
+        Dictionary newFromPairs: {
+            #rulesId. '23'.
+            #name. 'Notebook should contain text cells'.
+            #summary. 'Levrage the literate paradigm to explain your code using markdowns cells'.
+            #severityTitle. 'warning'.
+            #mooseName. 'notebook'.
+            #sourceText. ''.
+            #pos. 'notebook'
+        }
+    ))
+].
+
+(self isNotebookTooLong: aNotebookModel) ifTrue: [
+    manualViolations add: (self buildViolationDictionaryFrom: (
+        Dictionary newFromPairs: {
+            #rulesId. '24'.
+            #name. 'Notebook too long'.
+            #summary. 'Your notebook should not exceed 50 code cells'.
+            #severityTitle. 'warning'.
+            #mooseName. 'notebook'.
+            #sourceText. ''.
+            #pos. 'notebook'
+        }
+    ))
+].
+
+(self isNotebookversionControlled: aNotebookModel) ifFalse: [
+    manualViolations add: (self buildViolationDictionaryFrom: (
+        Dictionary newFromPairs: {
+            #rulesId. '25'.
+            #name. 'No version control'.
+            #summary. 'you should display the version of used librarie to ensure reproductibility'.
+            #severityTitle. 'warning'.
+            #mooseName. 'notebook'.
+            #sourceText. ''.
+            #pos. 'notebook'
+        }
+    ))
+].
+
+(self topTopBottomExection: aNotebookModel) ifFalse: [
+    manualViolations add: (self buildViolationDictionaryFrom: (
+        Dictionary newFromPairs: {
+            #rulesId. '26'.
+            #name. 'Non linear execution'.
+            #summary. 'Notebook code cells not run in order'.
+            #severityTitle. 'warning'.
+            #mooseName. 'notebook'.
+            #sourceText. ''.
+            #pos. 'notebook'
+        }
+    ))
+].
+
 ^manualViolations
 ]
 
